@@ -1,0 +1,1 @@
+# Flow Method Static Assets
