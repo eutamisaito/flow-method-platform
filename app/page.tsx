@@ -16,30 +16,38 @@ export default function HomePage() {
               Descubra, desenvolva e maximize seu valor intangível através de uma metodologia 
               científica baseada nos pilares de Identidade, Influência e Legado.
             </p>
-            <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl py-4 px-8 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-3 mx-auto">
-              <Play className="w-6 h-6" />
+            <button 
+              type="button"
+              aria-label="Iniciar avaliação do Flow Method para descobrir seu valor intangível"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl py-4 px-8 rounded-xl font-semibold hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all flex items-center justify-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => {
+                // Add loading state and actual functionality
+                console.log('Starting assessment...');
+              }}
+            >
+              <Play className="w-6 h-6" aria-hidden="true" />
               Iniciar Avaliação
             </button>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <Target className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Identidade</h3>
+              <Target className="w-12 h-12 text-purple-600 mx-auto mb-4" aria-hidden="true" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Identidade</h2>
               <p className="text-gray-600">
                 Clareza de propósito, valores e talentos únicos que definem quem você é.
               </p>
             </div>
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Influência</h3>
+              <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-4" aria-hidden="true" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Influência</h2>
               <p className="text-gray-600">
                 Capacidade de impactar e inspirar outros através de sua presença e ações.
               </p>
             </div>
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Legado</h3>
+              <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" aria-hidden="true" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Legado</h2>
               <p className="text-gray-600">
                 Impacto duradouro que transcende sua presença física e beneficia gerações futuras.
               </p>
