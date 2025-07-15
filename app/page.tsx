@@ -24,11 +24,18 @@ export default function HomePage() {
 
   useEffect(() => {
     setIsVisible(true);
+    
+    // Safety check for empty testimonials array
+    if (testimonials.length === 0) {
+      return;
+    }
+    
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
+    
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   const stats = [
     { icon: DollarSign, value: "R$ 2.3M", label: "Valor Médio Descoberto", color: "green" as const },

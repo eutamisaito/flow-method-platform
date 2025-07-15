@@ -44,7 +44,9 @@ export default function CountdownTimer({
       return;
     }
     
-    const timer = setInterval(() => {
+    let timer: NodeJS.Timeout;
+    
+    timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
@@ -54,7 +56,11 @@ export default function CountdownTimer({
       });
     }, 1000);
     
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
   }, [timeLeft, onComplete]);
   
   const formatTime = useCallback((seconds: number) => {
