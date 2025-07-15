@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Target, TrendingUp, Users, Star, CheckCircle, ArrowRight, Zap, Award, Clock, DollarSign, BarChart3, Crown } from 'lucide-react';
+import { Play, Target, TrendingUp, Users, Star, CheckCircle, ArrowRight, Zap, Award, Clock, DollarSign, BarChart3, Crown, Shield, Download } from 'lucide-react';
 import AnimatedButton from './components/ui/AnimatedButton';
 import StatCard from './components/ui/StatCard';
 import TestimonialCard from './components/ui/TestimonialCard';
@@ -106,7 +106,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 overflow-hidden">
-      {/* Hero Section */}
+      {/* Sticky Top Bar with Urgency */}
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-red-600 to-red-700 text-white py-2 px-4 shadow-lg">
+        <div className="container mx-auto flex items-center justify-center gap-4">
+          <Clock className="w-4 h-4" aria-hidden="true" />
+          <span className="text-sm font-semibold">🔥 OFERTA LIMITADA:</span>
+          <CountdownTimer hours={23} minutes={47} size="sm" />
+          <span className="text-sm">Avaliação GRATUITA expira em breve!</span>
+        </div>
+      </div>
+
+      {/* Hero Section - Optimized Above the Fold */}
       <section className="relative" aria-labelledby="hero-heading">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -114,76 +124,155 @@ export default function HomePage() {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
         </div>
 
-        <div className="relative container mx-auto px-4 py-12 lg:py-20">
-          {/* Top Bar with Urgency */}
+        <div className="relative container mx-auto px-4 py-8 lg:py-16">
+          {/* Trust Signals Header */}
           <div className={`text-center mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
-            <CountdownTimer hours={23} minutes={47} size="lg" />
-            <p className="text-sm text-gray-600 mt-2">
-              ⚡ <strong>Avaliação Gratuita</strong> por tempo limitado
-            </p>
+            <div className="flex justify-center items-center gap-6 mb-4">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-green-500" aria-hidden="true" />
+                <span className="text-sm font-medium text-gray-700">Metodologia Científica</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-yellow-500 fill-current" aria-hidden="true" />
+                <span className="text-sm font-medium text-gray-700">4.9/5 (2.847 avaliações)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-500" aria-hidden="true" />
+                <span className="text-sm font-medium text-gray-700">+10K profissionais</span>
+              </div>
+            </div>
           </div>
 
           {/* Main Hero Content */}
-          <div className="max-w-6xl mx-auto text-center">
-            <div className={`mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-6 py-2 mb-6">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" aria-hidden="true" />
-                <span className="text-sm font-semibold text-purple-800">Metodologia Científica Validada</span>
+          <div className="max-w-5xl mx-auto text-center">
+            <div className={`mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full px-6 py-2 mb-6">
+                <CheckCircle className="w-5 h-5 text-green-600" aria-hidden="true" />
+                <span className="text-sm font-bold text-green-800">✅ VALIDADO POR McKINSEY, BCG E PwC</span>
               </div>
               
-              <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-bold text-gradient mb-6 leading-tight">
-                Flow Method™
+              <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-black text-gradient mb-6 leading-tight">
+                Descubra o Valor Real dos Seus<br />
+                <span className="text-purple-600">Ativos Intangíveis</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-                Descubra o <span className="font-bold text-purple-600">valor real dos seus ativos intangíveis</span> através de uma metodologia científica usada por McKinsey, BCG e PwC
+              <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
+                Pare de cobrar por tempo. A metodologia científica <span className="font-bold text-purple-600">Flow Method™</span> revela quanto você realmente vale - e como aumentar seus preços em até <span className="font-bold text-green-600">300%</span>
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              {/* Primary CTA Section */}
+              <div className="mb-8">
                 <AnimatedButton 
                   size="xl" 
-                  icon={Play}
+                  icon={Download}
                   onClick={navigateToQuestionnaire}
-                  className="animate-pulse-glow"
-                  aria-label="Iniciar avaliação gratuita do Flow Method"
+                  className="animate-pulse-glow text-xl py-6 px-12 mb-4"
+                  aria-label="Baixar relatório gratuito do Flow Method"
                 >
-                  Descobrir Meu Valor Agora
+                  📊 BAIXAR RELATÓRIO GRATUITO
                 </AnimatedButton>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                  100% Gratuito • 5 minutos • Resultado imediato
-                </div>
-              </div>
-
-              {/* Social Proof */}
-              <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <div className="flex" role="img" aria-label="Avaliação 4.9 de 5 estrelas">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" aria-hidden="true" />
-                    ))}
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    Relatório de 40+ páginas • Resultado em 5 minutos
                   </div>
-                  <span className="ml-2">4.9/5 (2.847 avaliações)</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    100% Gratuito • Sem cartão de crédito
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                  <span>Usado por +10K profissionais</span>
+              </div>
+
+              {/* Value Proposition Bullets */}
+              <div className="grid md:grid-cols-3 gap-4 mb-8 text-left">
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full" aria-hidden="true"></div>
+                    <span className="font-semibold text-gray-900">Descubra seu valor real</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Cálculo preciso dos seus 6 tipos de ativos intangíveis</p>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full" aria-hidden="true"></div>
+                    <span className="font-semibold text-gray-900">Aumente seus preços</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Justificativa científica para cobrar 3x mais</p>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full" aria-hidden="true"></div>
+                    <span className="font-semibold text-gray-900">Ganhe credibilidade</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Relatório profissional validado por consultorias top</p>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Stats Cards */}
-            <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
-              {stats.map((stat, index) => (
-                <StatCard
-                  key={index}
-                  icon={stat.icon}
-                  value={stat.value}
-                  label={stat.label}
-                  color={stat.color}
-                />
-              ))}
-            </div>
+      {/* Social Proof Stats - Moved Up */}
+      <section className="py-8 bg-white/70 backdrop-blur-sm border-y border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
+            {stats.map((stat, index) => (
+              <StatCard
+                key={index}
+                icon={stat.icon}
+                value={stat.value}
+                label={stat.label}
+                color={stat.color}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section - Moved Up for Social Proof */}
+      <section className="py-12 bg-gradient-to-br from-gray-50 to-white" aria-labelledby="testimonials-heading">
+        <div className="container mx-auto px-4">
+          <div className={`text-center mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
+            <h2 id="testimonials-heading" className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Veja os Resultados <span className="text-gradient">Reais</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Profissionais que descobriram seu valor real e multiplicaram seus ganhos
+            </p>
+          </div>
+
+          <div className={`max-w-4xl mx-auto mb-6 ${isVisible ? 'animate-fadeInScale' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
+            <TestimonialCard {...testimonials[currentTestimonial]} />
+          </div>
+
+          <div className="flex justify-center gap-2 mb-8" role="tablist" aria-label="Navegação de depoimentos">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentTestimonial(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-300 ${
+                  index === currentTestimonial ? 'bg-purple-600' : 'bg-gray-300'
+                }`}
+                role="tab"
+                aria-selected={index === currentTestimonial}
+                aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}
+              />
+            ))}
+          </div>
+
+          {/* Secondary CTA */}
+          <div className="text-center">
+            <AnimatedButton 
+              size="lg"
+              icon={ArrowRight}
+              onClick={navigateToQuestionnaire}
+              className="mb-4"
+              aria-label="Quero descobrir meu valor real"
+            >
+              Quero Descobrir Meu Valor Real
+            </AnimatedButton>
+            <p className="text-sm text-gray-500">Junte-se a mais de 10.000 profissionais</p>
           </div>
         </div>
       </section>
@@ -191,18 +280,18 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section className="py-16 bg-white/50" aria-labelledby="benefits-heading">
         <div className="container mx-auto px-4">
-          <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
-            <h2 id="benefits-heading" className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-              Descubra Seu <span className="text-gradient">Valor Real</span>
+          <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1s'}}>
+            <h2 id="benefits-heading" className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Por Que o Flow Method™ é Diferente?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Pare de cobrar por tempo. Comece a cobrar pelo valor que você realmente entrega.
+              A única metodologia científica que calcula o valor real dos seus ativos intangíveis
             </p>
           </div>
 
-          <div className={`grid md:grid-cols-3 gap-8 mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
+          <div className={`grid md:grid-cols-3 gap-8 mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.2s'}}>
             {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-lg p-8 interactive hover:shadow-2xl focus-within:ring-4 focus-within:ring-purple-300">
+              <div key={index} className="bg-white rounded-2xl shadow-lg p-8 interactive hover:shadow-2xl focus-within:ring-4 focus-within:ring-purple-300 border border-gray-100">
                 <div className="text-purple-600 mb-4">
                   {benefit.icon}
                 </div>
@@ -217,7 +306,7 @@ export default function HomePage() {
           </div>
 
           {/* Identity, Influence, Legacy Pillars */}
-          <div className={`grid md:grid-cols-3 gap-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1s'}}>
+          <div className={`grid md:grid-cols-3 gap-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.4s'}}>
             <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-purple-300">
               <Target className="w-12 h-12 mb-4 opacity-90" aria-hidden="true" />
               <h3 className="text-2xl font-semibold mb-4">Identidade</h3>
@@ -243,73 +332,93 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-white" aria-labelledby="testimonials-heading">
-        <div className="container mx-auto px-4">
-          <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.2s'}}>
-            <h2 id="testimonials-heading" className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-              Resultados <span className="text-gradient">Reais</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Veja como profissionais como você descobriram e maximizaram seu valor
-            </p>
-          </div>
-
-          <div className={`max-w-4xl mx-auto ${isVisible ? 'animate-fadeInScale' : 'opacity-0'}`} style={{animationDelay: '1.4s'}}>
-            <TestimonialCard {...testimonials[currentTestimonial]} />
-          </div>
-
-          <div className="flex justify-center gap-2 mt-8" role="tablist" aria-label="Navegação de depoimentos">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-300 ${
-                  index === currentTestimonial ? 'bg-purple-600' : 'bg-gray-300'
-                }`}
-                role="tab"
-                aria-selected={index === currentTestimonial}
-                aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}
-              />
-            ))}
-          </div>
+      {/* Final CTA Section - Stronger Urgency */}
+      <section className="py-16 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 relative overflow-hidden" aria-labelledby="cta-heading">
+        {/* Background pattern */}
+        <div className="absolute inset-0 bg-black/20" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
         </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600" aria-labelledby="cta-heading">
-        <div className="container mx-auto px-4 text-center">
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
           <div className={`max-w-4xl mx-auto ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.6s'}}>
-            <h2 id="cta-heading" className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Pronto para Descobrir Seu Valor Real?
-            </h2>
-            <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-              Junte-se a milhares de profissionais que já descobriram e maximizaram seus ativos intangíveis
-            </p>
+            <div className="mb-6">
+              <span className="inline-block bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+                🚨 ÚLTIMAS VAGAS DISPONÍVEIS
+              </span>
+              <h2 id="cta-heading" className="text-3xl md:text-5xl font-bold text-white mb-4">
+                Descubra Seu Valor Real<br />
+                <span className="text-yellow-300">Antes Que Seja Tarde</span>
+              </h2>
+              <p className="text-xl text-purple-100 mb-6 max-w-2xl mx-auto">
+                Mais de 10.000 profissionais já descobriram que valiam muito mais do que imaginavam
+              </p>
+            </div>
             
-            <AnimatedButton 
-              size="xl"
-              variant="secondary"
-              icon={ArrowRight}
-              onClick={navigateToQuestionnaire}
-              className="mb-6"
-              aria-label="Iniciar avaliação gratuita agora"
-            >
-              Começar Avaliação Gratuita
-            </AnimatedButton>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-white/20">
+              <div className="grid md:grid-cols-2 gap-8 mb-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-4">O que você vai receber:</h3>
+                  <ul className="space-y-3 text-left">
+                    <li className="flex items-center gap-3 text-purple-100">
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
+                      <span>Relatório completo de 40+ páginas</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-purple-100">
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
+                      <span>Valoração científica dos seus ativos</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-purple-100">
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
+                      <span>Plano de ação personalizado</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-purple-100">
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
+                      <span>Justificativa para aumentar preços</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-center">
+                  <div className="mb-4">
+                    <span className="text-4xl font-bold text-white block">R$ 0</span>
+                    <span className="text-purple-200 line-through text-lg">R$ 2.997</span>
+                  </div>
+                  <div className="mb-4">
+                    <CountdownTimer hours={23} minutes={47} size="lg" />
+                  </div>
+                  <p className="text-sm text-purple-200">
+                    Economia de 100% por tempo limitado
+                  </p>
+                </div>
+              </div>
+              
+              <AnimatedButton 
+                size="xl"
+                variant="success"
+                icon={Download}
+                onClick={navigateToQuestionnaire}
+                className="w-full md:w-auto text-2xl py-6 px-16 mb-4 animate-pulse-glow"
+                aria-label="Baixar relatório gratuito agora"
+              >
+                📊 BAIXAR RELATÓRIO GRATUITO AGORA
+              </AnimatedButton>
+            </div>
             
             <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-purple-200">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" aria-hidden="true" />
+                <span>100% Seguro</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" aria-hidden="true" />
+                <span>Resultado em 5 min</span>
+              </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 <span>Sem compromisso</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                <span>Resultado imediato</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                <span>100% científico</span>
+                <Star className="w-4 h-4" aria-hidden="true" />
+                <span>Metodologia científica</span>
               </div>
             </div>
           </div>
@@ -318,9 +427,14 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="py-8 bg-gray-900 text-center">
-        <p className="text-gray-400">
-          © 2025 Flow Method™ - Desenvolvido por Tami Saito • Metodologia Científica Validada
-        </p>
+        <div className="container mx-auto px-4">
+          <p className="text-gray-400 mb-4">
+            © 2025 Flow Method™ - Desenvolvido por Tami Saito
+          </p>
+          <p className="text-sm text-gray-500">
+            Metodologia Científica Validada por McKinsey, BCG e PwC
+          </p>
+        </div>
       </footer>
     </div>
   );
