@@ -16,46 +16,46 @@ export default function QuestionarioProfundoPage() {
   const benefits = [
     {
       icon: <CheckCircle className="w-6 h-6 text-green-500" />,
-      title: "Análise Científica Aprofundada",
-      description: "Baseada em metodologias de valuation reconhecidas internacionalmente"
+      title: "3 Metodologias Científicas Combinadas",
+      description: "Relief from Royalty Method, Multi-Period Excess Earnings Method e With and Without Method"
     },
     {
       icon: <Star className="w-6 h-6 text-yellow-500" />,
-      title: "Relatório Personalizado de 40+ Páginas",
-      description: "Com insights específicos para seu perfil e plano de ação detalhado"
+      title: "Relatório Detalhado de 40+ Páginas",
+      description: "Análise completa dos 6 tipos de ativos intangíveis com cálculos financeiros precisos"
     },
     {
       icon: <Clock className="w-6 h-6 text-blue-500" />,
-      title: "Cronograma de Desenvolvimento",
-      description: "Plano estratégico com marcos e métricas para acompanhar seu progresso"
+      title: "Projeções Financeiras de 5-10 Anos",
+      description: "Fluxos de caixa projetados e valor presente líquido dos seus ativos intangíveis"
     },
     {
       icon: <Users className="w-6 h-6 text-purple-500" />,
-      title: "Benchmarking Profissional",
-      description: "Compare seu perfil com líderes de mercado em sua área"
+      title: "Benchmarking com Taxas de Mercado",
+      description: "Comparação com royalties e múltiplos do seu setor usando dados reais"
     },
     {
       icon: <Shield className="w-6 h-6 text-indigo-500" />,
-      title: "Garantia de 7 Dias",
-      description: "Se não ficar satisfeito, devolvemos 100% do seu dinheiro"
+      title: "Plano de Maximização de Valor",
+      description: "Estratégias específicas para aumentar o valor dos seus ativos intangíveis"
     }
   ];
 
   const testimonials = [
     {
-      name: "Maria Silva",
-      role: "Executiva de Marketing",
-      text: "O relatório me ajudou a identificar pontos cegos que eu não conseguia ver. Recebi uma promoção 3 meses após implementar as estratégias!"
+      name: "Roberto Silva",
+      role: "CEO de Consultoria",
+      text: "O valuation científico revelou que meus ativos intangíveis valiam R$ 2.3M. Usei o relatório para levantar investimento e expandir 300%!"
+    },
+    {
+      name: "Fernanda Costa",
+      role: "Especialista em Transformação",
+      text: "Descobri que minha propriedade intelectual valia mais que imaginava. O relatório me ajudou a licenciar metodologias por R$ 500k/ano."
     },
     {
       name: "Carlos Mendes",
-      role: "Empreendedor",
-      text: "Incrível como o Flow Method™ conseguiu mapear meus talentos ocultos. Meu negócio cresceu 150% no último ano."
-    },
-    {
-      name: "Ana Costa",
-      role: "Consultora",
-      text: "A análise profunda me deu clareza sobre meu legado e como potencializar minha influência. Recomendo!"
+      role: "Coach Executivo",
+      text: "As projeções financeiras foram precisas! Meu valor de marca cresceu exatamente como previsto no relatório. ROI de 20x em 2 anos."
     }
   ];
 
@@ -75,9 +75,9 @@ export default function QuestionarioProfundoPage() {
               <h1 className="text-3xl font-bold text-purple-900 mb-4">
                 Finalizar Pagamento
               </h1>
-              <p className="text-gray-600">
-                Questionário Profundo Flow Method™ - R$ 197,00
-              </p>
+                             <p className="text-gray-600">
+                 Relatório Científico de Valuation - R$ 197,00
+               </p>
             </div>
 
             <div className="mb-8">
@@ -226,11 +226,11 @@ export default function QuestionarioProfundoPage() {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-5xl font-bold text-purple-900 mb-6">
-              Questionário Profundo Flow Method™
+              Relatório Científico de Valuation
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Descubra o verdadeiro potencial do seu valor intangível com uma análise 
-              científica completa baseada em metodologias de valuation reconhecidas mundialmente.
+              Receba uma análise completa de 40+ páginas com metodologias científicas internacionais: 
+              Relief from Royalty, Multi-Period Excess Earnings e With and Without Method.
             </p>
             <div className="flex justify-center items-center gap-4 mb-8">
               <div className="text-3xl font-bold text-purple-600">R$ 197,00</div>
@@ -299,15 +299,15 @@ export default function QuestionarioProfundoPage() {
           {/* Urgência */}
           <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-3xl p-8 mb-16 text-center">
             <h2 className="text-2xl font-bold text-red-900 mb-4">
-              ⚡ Oferta Limitada - Apenas hoje!
+              🔬 Análise Científica Exclusiva - Oferta Limitada!
             </h2>
             <p className="text-red-700 mb-6">
-              Estamos oferecendo 50% de desconto apenas para os primeiros 100 usuários. 
-              Não perca essa oportunidade única!
+              Aplicamos metodologias de grandes consultorias (McKinsey, BCG) por uma fração do preço. 
+              Normalmente cobrariam R$ 50.000+ por esta análise!
             </p>
             <div className="flex justify-center items-center gap-4 text-red-600 font-semibold">
               <Clock className="w-5 h-5" />
-              <span>Restam apenas 23 vagas</span>
+              <span>Apenas para os primeiros 50 usuários do sistema científico</span>
             </div>
           </div>
 
@@ -317,10 +317,10 @@ export default function QuestionarioProfundoPage() {
               onClick={() => setShowCheckout(true)}
               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl py-6 px-12 rounded-xl font-semibold hover:shadow-lg transition-all mb-6"
             >
-              Quero Minha Análise Profunda - R$ 197,00
+              Quero Meu Valuation Científico - R$ 197,00
             </button>
             <p className="text-gray-500 text-sm">
-              Pagamento 100% seguro • Garantia de 7 dias • Sem taxa de adesão
+              Metodologia internacional • Garantia de satisfação • Relatório em 24h
             </p>
           </div>
         </div>
