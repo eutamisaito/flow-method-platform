@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle, TrendingUp, DollarSign } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, CheckCircle, TrendingUp, DollarSign, Zap, Crown, Target, Users } from 'lucide-react';
+import AnimatedButton from '../components/ui/AnimatedButton';
+import ProgressBar from '../components/ui/ProgressBar';
 
 interface Question {
   id: number;
@@ -9,7 +11,7 @@ interface Question {
   question: string;
   options: string[];
   scores: number[];
-  valorationInput: string; // Novo campo para inputs de valoração
+  valorationInput: string;
 }
 
 const questions: Question[] = [
@@ -49,761 +51,588 @@ const questions: Question[] = [
   {
     id: 5,
     category: 'consistencia_marca',
-    question: 'Qual é sua taxa de engajamento média nas redes sociais?',
-    options: ['Menos de 1%', '1-3%', '3-5%', '5-8%', 'Mais de 8%'],
-    scores: [0.5, 2, 4, 6.5, 10],
-    valorationInput: 'taxa_engajamento'
+    question: 'Quantas pessoas reconhecem você como referência na sua área?',
+    options: ['Menos de 50', '50-200', '200-1.000', '1.000-10.000', 'Mais de 10.000'],
+    scores: [25, 125, 600, 5500, 25000],
+    valorationInput: 'reconhecimento'
   },
   {
     id: 6,
     category: 'consistencia_marca',
-    question: 'Você possui marca registrada ou proteção legal da sua marca pessoal?',
-    options: ['Não', 'Em processo', 'Marca registrada nacional', 'Marca registrada internacional', 'Portfólio completo de proteção'],
+    question: 'Qual é a frequência de menções espontâneas da sua marca pessoal?',
+    options: ['Muito raramente', 'Algumas vezes por mês', 'Várias vezes por semana', 'Diariamente', 'Múltiplas vezes por dia'],
     scores: [1, 2, 3, 4, 5],
-    valorationInput: 'protecao_marca'
+    valorationInput: 'mencoes_espontaneas'
   },
   {
     id: 7,
     category: 'consistencia_marca',
-    question: 'Quantos parceiros estratégicos ou embaixadores você possui?',
-    options: ['Nenhum', '1-3', '4-10', '11-25', 'Mais de 25'],
-    scores: [0, 2, 7, 18, 35],
-    valorationInput: 'parceiros_estrategicos'
+    question: 'Quantos canais de comunicação você mantém ativos?',
+    options: ['1-2 canais', '3-4 canais', '5-6 canais', '7-8 canais', 'Mais de 8 canais'],
+    scores: [1.5, 3.5, 5.5, 7.5, 10],
+    valorationInput: 'canais_comunicacao'
   },
   {
     id: 8,
     category: 'consistencia_marca',
-    question: 'Qual é o valor médio dos seus produtos/serviços?',
-    options: ['Até R$ 500', 'R$ 501 - R$ 2.000', 'R$ 2.001 - R$ 10.000', 'R$ 10.001 - R$ 50.000', 'Acima de R$ 50.000'],
-    scores: [250, 1250, 6000, 30000, 75000],
-    valorationInput: 'valor_medio_produto'
+    question: 'Qual o nível de engajamento médio do seu conteúdo?',
+    options: ['Menos de 2%', '2-5%', '5-10%', '10-20%', 'Mais de 20%'],
+    scores: [1, 3.5, 7.5, 15, 25],
+    valorationInput: 'engajamento_medio'
   },
 
-  // AUTORIDADE E CREDIBILIDADE (8 perguntas)
+  // AUTORIDADE & CREDIBILIDADE (8 perguntas)
   {
     id: 9,
     category: 'autoridade_credibilidade',
-    question: 'Quantas certificações, diplomas ou credenciais relevantes você possui?',
+    question: 'Quantas certificações ou títulos relevantes você possui?',
     options: ['Nenhuma', '1-2', '3-5', '6-10', 'Mais de 10'],
     scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'credenciais'
+    valorationInput: 'certificacoes'
   },
   {
     id: 10,
     category: 'autoridade_credibilidade',
-    question: 'Quantas palestras, workshops ou apresentações você fez no último ano?',
-    options: ['Nenhuma', '1-5', '6-15', '16-30', 'Mais de 30'],
-    scores: [0, 3, 10, 23, 40],
-    valorationInput: 'palestras_ano'
+    question: 'Quantos anos de experiência comprovada você tem na área?',
+    options: ['Menos de 2 anos', '2-5 anos', '5-10 anos', '10-20 anos', 'Mais de 20 anos'],
+    scores: [1, 3.5, 7.5, 15, 25],
+    valorationInput: 'experiencia_comprovada'
   },
   {
     id: 11,
     category: 'autoridade_credibilidade',
-    question: 'Quantas publicações (artigos, livros, papers) você possui?',
-    options: ['Nenhuma', '1-3', '4-10', '11-25', 'Mais de 25'],
-    scores: [0, 2, 7, 18, 35],
-    valorationInput: 'publicacoes'
+    question: 'Quantas vezes você foi convidado como palestrante ou especialista?',
+    options: ['Nunca', '1-5 vezes', '6-20 vezes', '21-50 vezes', 'Mais de 50 vezes'],
+    scores: [0, 3, 13, 35, 75],
+    valorationInput: 'palestras_convites'
   },
   {
     id: 12,
     category: 'autoridade_credibilidade',
-    question: 'Qual é sua posição em rankings ou listas do seu setor?',
-    options: ['Não apareço', 'Top 100', 'Top 50', 'Top 20', 'Top 10'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'ranking_setor'
+    question: 'Quantos artigos ou publicações você tem em veículos reconhecidos?',
+    options: ['Nenhum', '1-5', '6-20', '21-50', 'Mais de 50'],
+    scores: [0, 3, 13, 35, 75],
+    valorationInput: 'publicacoes'
   },
   {
     id: 13,
     category: 'autoridade_credibilidade',
-    question: 'Quantas menções na mídia (entrevistas, citações) você teve no último ano?',
-    options: ['Nenhuma', '1-5', '6-15', '16-30', 'Mais de 30'],
-    scores: [0, 3, 10, 23, 40],
-    valorationInput: 'mencoes_midia'
+    question: 'Qual seu nível de formação acadêmica?',
+    options: ['Ensino Médio', 'Graduação', 'Especialização', 'Mestrado', 'Doutorado'],
+    scores: [1, 3, 5, 8, 12],
+    valorationInput: 'formacao_academica'
   },
   {
     id: 14,
     category: 'autoridade_credibilidade',
-    question: 'Qual é o premium de preço que você consegue cobrar em relação à concorrência?',
-    options: ['Mesmos preços', '10-20% maior', '20-40% maior', '40-70% maior', 'Mais de 70% maior'],
-    scores: [0, 15, 30, 55, 85],
-    valorationInput: 'premium_preco'
+    question: 'Quantos prêmios ou reconhecimentos profissionais você recebeu?',
+    options: ['Nenhum', '1-2', '3-5', '6-10', 'Mais de 10'],
+    scores: [0, 1.5, 4, 8, 15],
+    valorationInput: 'premios_reconhecimentos'
   },
   {
     id: 15,
     category: 'autoridade_credibilidade',
-    question: 'Quantos casos de sucesso documentados você possui?',
-    options: ['Nenhum', '1-10', '11-25', '26-50', 'Mais de 50'],
-    scores: [0, 5, 18, 38, 75],
-    valorationInput: 'casos_sucesso'
+    question: 'Com que frequência você é citado ou referenciado por outros especialistas?',
+    options: ['Nunca', 'Raramente', 'Algumas vezes por mês', 'Semanalmente', 'Frequentemente'],
+    scores: [0, 1, 3, 6, 10],
+    valorationInput: 'citacoes_referencias'
   },
   {
     id: 16,
     category: 'autoridade_credibilidade',
-    question: 'Qual é sua taxa de retenção de clientes?',
-    options: ['Menos de 50%', '50-70%', '70-85%', '85-95%', 'Mais de 95%'],
-    scores: [40, 60, 77.5, 90, 97.5],
-    valorationInput: 'taxa_retencao'
+    question: 'Qual o tamanho da sua rede profissional qualificada?',
+    options: ['Menos de 100', '100-500', '500-2.000', '2.000-10.000', 'Mais de 10.000'],
+    scores: [50, 300, 1250, 6000, 20000],
+    valorationInput: 'rede_profissional'
   },
 
   // PROPRIEDADE INTELECTUAL (7 perguntas)
   {
     id: 17,
     category: 'propriedade_intelectual',
-    question: 'Quantas metodologias proprietárias você desenvolveu?',
-    options: ['Nenhuma', '1-2', '3-5', '6-10', 'Mais de 10'],
-    scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'metodologias_proprietarias'
+    question: 'Quantas marcas registradas você possui?',
+    options: ['Nenhuma', '1', '2-3', '4-5', 'Mais de 5'],
+    scores: [0, 2, 5, 8, 12],
+    valorationInput: 'marcas_registradas'
   },
   {
     id: 18,
     category: 'propriedade_intelectual',
-    question: 'Quantos frameworks únicos você criou?',
-    options: ['Nenhum', '1-2', '3-5', '6-10', 'Mais de 10'],
-    scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'frameworks_unicos'
+    question: 'Quantos livros ou e-books você publicou?',
+    options: ['Nenhum', '1', '2-3', '4-7', 'Mais de 7'],
+    scores: [0, 3, 6, 10, 15],
+    valorationInput: 'livros_publicados'
   },
   {
     id: 19,
     category: 'propriedade_intelectual',
-    question: 'Você possui patentes, marcas registradas ou direitos autorais?',
-    options: ['Nenhum', 'Em processo', '1-3 registros', '4-10 registros', 'Mais de 10 registros'],
-    scores: [0, 1, 2, 4, 5],
-    valorationInput: 'registros_pi'
+    question: 'Quantos cursos online você criou e comercializa?',
+    options: ['Nenhum', '1', '2-3', '4-7', 'Mais de 7'],
+    scores: [0, 2, 5, 9, 15],
+    valorationInput: 'cursos_online'
   },
   {
     id: 20,
     category: 'propriedade_intelectual',
-    question: 'Qual é o tempo de desenvolvimento investido nas suas metodologias (em anos)?',
-    options: ['Menos de 1 ano', '1-2 anos', '3-5 anos', '6-10 anos', 'Mais de 10 anos'],
-    scores: [0.5, 1.5, 4, 8, 12],
-    valorationInput: 'tempo_desenvolvimento'
+    question: 'Quantas patentes ou direitos autorais você registrou?',
+    options: ['Nenhum', '1', '2-3', '4-7', 'Mais de 7'],
+    scores: [0, 4, 8, 14, 25],
+    valorationInput: 'patentes_direitos'
   },
   {
     id: 21,
     category: 'propriedade_intelectual',
-    question: 'Suas metodologias são aplicáveis em outros países/culturas?',
-    options: ['Apenas local', 'Regional', 'Nacional', 'Internacional', 'Global'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'aplicabilidade_global'
+    question: 'Qual a receita anual gerada pelos seus produtos intelectuais?',
+    options: ['R$ 0', 'R$ 1-50K', 'R$ 50-200K', 'R$ 200K-1M', 'Mais de R$ 1M'],
+    scores: [0, 25000, 125000, 600000, 2000000],
+    valorationInput: 'receita_propriedade'
   },
   {
     id: 22,
     category: 'propriedade_intelectual',
-    question: 'Quantos profissionais você já treinou para aplicar suas metodologias?',
-    options: ['Nenhum', '1-10', '11-50', '51-200', 'Mais de 200'],
-    scores: [0, 5, 30, 125, 300],
-    valorationInput: 'profissionais_treinados'
+    question: 'Quantos softwares ou ferramentas digitais você desenvolveu?',
+    options: ['Nenhum', '1', '2-3', '4-7', 'Mais de 7'],
+    scores: [0, 3, 6, 12, 20],
+    valorationInput: 'softwares_ferramentas'
   },
   {
     id: 23,
     category: 'propriedade_intelectual',
-    question: 'Qual é o potencial de licenciamento das suas metodologias?',
-    options: ['Baixo', 'Moderado', 'Alto', 'Muito alto', 'Extremamente alto'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'potencial_licenciamento'
+    question: 'Quantos templates, planilhas ou recursos você licencia?',
+    options: ['Nenhum', '1-5', '6-15', '16-30', 'Mais de 30'],
+    scores: [0, 3, 10, 23, 40],
+    valorationInput: 'templates_recursos'
   },
 
-  // METODOLOGIAS E FRAMEWORKS (8 perguntas)
+  // METODOLOGIAS & FRAMEWORKS (8 perguntas)
   {
     id: 24,
     category: 'metodologias_frameworks',
-    question: 'Qual percentual da sua receita é atribuível às suas metodologias proprietárias?',
-    options: ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'],
-    scores: [10, 30, 50, 70, 90],
-    valorationInput: 'receita_atribuivel'
+    question: 'Quantas metodologias exclusivas você desenvolveu?',
+    options: ['Nenhuma', '1', '2-3', '4-5', 'Mais de 5'],
+    scores: [0, 4, 8, 12, 20],
+    valorationInput: 'metodologias_exclusivas'
   },
   {
     id: 25,
     category: 'metodologias_frameworks',
-    question: 'Quantos clientes diferentes já aplicaram suas metodologias?',
-    options: ['Nenhum', '1-10', '11-50', '51-200', 'Mais de 200'],
-    scores: [0, 5, 30, 125, 300],
-    valorationInput: 'clientes_metodologia'
+    question: 'Quantos frameworks estruturados você criou?',
+    options: ['Nenhum', '1', '2-3', '4-7', 'Mais de 7'],
+    scores: [0, 3, 6, 11, 18],
+    valorationInput: 'frameworks_criados'
   },
   {
     id: 26,
     category: 'metodologias_frameworks',
-    question: 'Qual é a taxa de sucesso documentada das suas metodologias?',
-    options: ['Menos de 50%', '50-70%', '70-85%', '85-95%', 'Mais de 95%'],
-    scores: [40, 60, 77.5, 90, 97.5],
-    valorationInput: 'taxa_sucesso_metodologia'
+    question: 'Quantos clientes aplicaram suas metodologias com sucesso?',
+    options: ['Nenhum', '1-10', '11-50', '51-200', 'Mais de 200'],
+    scores: [0, 5, 30, 125, 400],
+    valorationInput: 'clientes_metodologia'
   },
   {
     id: 27,
     category: 'metodologias_frameworks',
-    question: 'Há quanto tempo suas metodologias vêm sendo refinadas?',
-    options: ['Menos de 1 ano', '1-2 anos', '3-5 anos', '6-10 anos', 'Mais de 10 anos'],
-    scores: [0.5, 1.5, 4, 8, 12],
-    valorationInput: 'tempo_refinamento'
+    question: 'Qual o resultado médio alcançado pelos clientes com suas metodologias?',
+    options: ['Não mensurado', '10-30% melhoria', '30-100% melhoria', '100-300% melhoria', 'Mais de 300%'],
+    scores: [0, 1.2, 1.65, 2, 3],
+    valorationInput: 'resultado_metodologia'
   },
   {
     id: 28,
     category: 'metodologias_frameworks',
-    question: 'Suas metodologias possuem ferramentas de suporte (software, planilhas, etc.)?',
-    options: ['Nenhuma', 'Básicas', 'Intermediárias', 'Avançadas', 'Suite completa'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'ferramentas_suporte'
+    question: 'Quantos processos únicos você sistematizou?',
+    options: ['Nenhum', '1-3', '4-8', '9-15', 'Mais de 15'],
+    scores: [0, 2, 6, 12, 20],
+    valorationInput: 'processos_sistematizados'
   },
   {
     id: 29,
     category: 'metodologias_frameworks',
-    question: 'Qual é o ROI médio que seus clientes obtêm com suas metodologias?',
-    options: ['1-2x', '2-5x', '5-10x', '10-20x', 'Mais de 20x'],
-    scores: [1.5, 3.5, 7.5, 15, 25],
-    valorationInput: 'roi_clientes'
+    question: 'Suas metodologias são replicáveis por outros profissionais?',
+    options: ['Não são replicáveis', 'Parcialmente', 'Com treinamento', 'Facilmente replicáveis', 'Totalmente sistematizadas'],
+    scores: [1, 1.5, 2, 2.5, 3],
+    valorationInput: 'replicabilidade'
   },
   {
     id: 30,
     category: 'metodologias_frameworks',
-    question: 'Você possui sistema de certificação para suas metodologias?',
-    options: ['Não', 'Em desenvolvimento', 'Básico', 'Intermediário', 'Completo e reconhecido'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'sistema_certificacao'
+    question: 'Quantos estudos de caso documentados você possui?',
+    options: ['Nenhum', '1-5', '6-15', '16-30', 'Mais de 30'],
+    scores: [0, 3, 10, 23, 40],
+    valorationInput: 'estudos_caso'
   },
   {
     id: 31,
     category: 'metodologias_frameworks',
-    question: 'Quantas empresas/organizações usam suas metodologias regularmente?',
-    options: ['Nenhuma', '1-5', '6-20', '21-50', 'Mais de 50'],
-    scores: [0, 3, 13, 35, 75],
-    valorationInput: 'empresas_usuarios'
+    question: 'Qual o tempo médio para implementação das suas metodologias?',
+    options: ['Mais de 1 ano', '6-12 meses', '3-6 meses', '1-3 meses', 'Menos de 1 mês'],
+    scores: [1, 1.5, 2, 2.5, 3],
+    valorationInput: 'tempo_implementacao'
   },
 
-  // CONTEÚDO E CRIAÇÕES (8 perguntas)
+  // CONTEÚDO & CRIAÇÕES (8 perguntas)
   {
     id: 32,
     category: 'conteudo_criacoes',
-    question: 'Quantos livros, e-books ou guias você publicou?',
-    options: ['Nenhum', '1-2', '3-5', '6-10', 'Mais de 10'],
-    scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'livros_publicados'
+    question: 'Quantos vídeos educacionais você produziu?',
+    options: ['Nenhum', '1-20', '21-100', '101-500', 'Mais de 500'],
+    scores: [0, 10, 60, 300, 1000],
+    valorationInput: 'videos_educacionais'
   },
   {
     id: 33,
     category: 'conteudo_criacoes',
-    question: 'Quantos cursos online você possui?',
-    options: ['Nenhum', '1-2', '3-5', '6-10', 'Mais de 10'],
-    scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'cursos_online'
+    question: 'Quantos podcasts ou programas você criou/participou?',
+    options: ['Nenhum', '1-10', '11-50', '51-200', 'Mais de 200'],
+    scores: [0, 5, 30, 125, 400],
+    valorationInput: 'podcasts_programas'
   },
   {
     id: 34,
     category: 'conteudo_criacoes',
-    question: 'Qual é o número total de artigos/posts que você já publicou?',
-    options: ['0-50', '51-200', '201-500', '501-1000', 'Mais de 1000'],
-    scores: [25, 125, 350, 750, 1500],
-    valorationInput: 'artigos_publicados'
+    question: 'Quantos webinars ou masterclasses você realizou?',
+    options: ['Nenhum', '1-10', '11-50', '51-200', 'Mais de 200'],
+    scores: [0, 5, 30, 125, 400],
+    valorationInput: 'webinars_masterclasses'
   },
   {
     id: 35,
     category: 'conteudo_criacoes',
-    question: 'Quantos vídeos educacionais/tutoriais você possui?',
-    options: ['0-10', '11-50', '51-200', '201-500', 'Mais de 500'],
-    scores: [5, 30, 125, 350, 750],
-    valorationInput: 'videos_educacionais'
+    question: 'Qual o alcance total dos seus conteúdos (visualizações/downloads)?',
+    options: ['Menos de 10K', '10K-100K', '100K-1M', '1M-10M', 'Mais de 10M'],
+    scores: [5000, 55000, 550000, 5500000, 25000000],
+    valorationInput: 'alcance_conteudo'
   },
   {
     id: 36,
     category: 'conteudo_criacoes',
-    question: 'Qual é o tempo médio de vida útil do seu conteúdo?',
-    options: ['Menos de 1 ano', '1-2 anos', '3-5 anos', '6-10 anos', 'Mais de 10 anos'],
-    scores: [0.5, 1.5, 4, 8, 12],
-    valorationInput: 'vida_util_conteudo'
+    question: 'Quantos templates, checklists ou recursos você criou?',
+    options: ['Nenhum', '1-10', '11-30', '31-100', 'Mais de 100'],
+    scores: [0, 5, 20, 65, 150],
+    valorationInput: 'recursos_criados'
   },
   {
     id: 37,
     category: 'conteudo_criacoes',
-    question: 'Qual é a receita gerada especificamente pelo seu conteúdo?',
-    options: ['0-10% da receita', '11-25%', '26-50%', '51-75%', 'Mais de 75%'],
-    scores: [5, 18, 38, 63, 87.5],
-    valorationInput: 'receita_conteudo'
+    question: 'Qual a frequência de criação de conteúdo original?',
+    options: ['Raramente', 'Mensalmente', 'Semanalmente', 'Várias vezes/semana', 'Diariamente'],
+    scores: [1, 2, 3, 4, 5],
+    valorationInput: 'frequencia_criacao'
   },
   {
     id: 38,
     category: 'conteudo_criacoes',
-    question: 'Quantas visualizações/downloads totais seu conteúdo possui?',
-    options: ['0-10.000', '10.001-100.000', '100.001-1M', '1M-10M', 'Mais de 10M'],
-    scores: [5000, 55000, 550000, 5500000, 15000000],
-    valorationInput: 'visualizacoes_totais'
+    question: 'Quantas horas de conteúdo educacional você acumulou?',
+    options: ['Menos de 10h', '10-50h', '50-200h', '200-1000h', 'Mais de 1000h'],
+    scores: [5, 30, 125, 600, 2000],
+    valorationInput: 'horas_conteudo'
   },
   {
     id: 39,
     category: 'conteudo_criacoes',
-    question: 'Seu conteúdo é protegido por direitos autorais ou licenças específicas?',
-    options: ['Não', 'Proteção básica', 'Direitos autorais', 'Licenças específicas', 'Proteção completa'],
-    scores: [1, 2, 3, 4, 5],
-    valorationInput: 'protecao_conteudo'
+    question: 'Qual o nível de exclusividade dos seus conteúdos?',
+    options: ['Muito comum', 'Parcialmente único', 'Majoritariamente único', 'Altamente exclusivo', 'Totalmente inovador'],
+    scores: [1, 1.5, 2, 2.5, 3],
+    valorationInput: 'exclusividade_conteudo'
   },
 
-  // REDE DE RELACIONAMENTOS (8 perguntas)
+  // REDE/RELACIONAMENTOS (6 perguntas)
   {
     id: 40,
     category: 'rede_relacionamentos',
-    question: 'Quantos contatos profissionais relevantes você possui?',
-    options: ['0-100', '101-500', '501-2000', '2001-5000', 'Mais de 5000'],
-    scores: [50, 300, 1250, 3500, 7500],
-    valorationInput: 'contatos_profissionais'
+    question: 'Quantos parceiros estratégicos você possui?',
+    options: ['Nenhum', '1-5', '6-15', '16-30', 'Mais de 30'],
+    scores: [0, 3, 10, 23, 40],
+    valorationInput: 'parceiros_estrategicos'
   },
   {
     id: 41,
     category: 'rede_relacionamentos',
-    question: 'Quantas parcerias estratégicas ativas você possui?',
-    options: ['Nenhuma', '1-5', '6-15', '16-30', 'Mais de 30'],
-    scores: [0, 3, 10, 23, 40],
-    valorationInput: 'parcerias_ativas'
+    question: 'Quantos influenciadores da sua área você conhece pessoalmente?',
+    options: ['Nenhum', '1-5', '6-15', '16-50', 'Mais de 50'],
+    scores: [0, 3, 10, 33, 75],
+    valorationInput: 'influenciadores_conhecidos'
   },
   {
     id: 42,
     category: 'rede_relacionamentos',
-    question: 'Qual percentual de novos negócios vem via referências?',
-    options: ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'],
-    scores: [10, 30, 50, 70, 90],
-    valorationInput: 'negocios_referencia'
+    question: 'Quantas empresas/organizações você tem acesso direto ao CEO/fundador?',
+    options: ['Nenhuma', '1-5', '6-15', '16-50', 'Mais de 50'],
+    scores: [0, 3, 10, 33, 75],
+    valorationInput: 'acesso_ceos'
   },
   {
     id: 43,
     category: 'rede_relacionamentos',
-    question: 'Quantos mentores ou advisors você possui?',
-    options: ['Nenhum', '1-2', '3-5', '6-10', 'Mais de 10'],
-    scores: [0, 1.5, 4, 8, 15],
-    valorationInput: 'mentores_advisors'
+    question: 'Qual a qualidade média da sua rede profissional?',
+    options: ['Iniciantes', 'Profissionais médios', 'Especialistas', 'Líderes seniores', 'C-Level/Fundadores'],
+    scores: [1, 2, 3, 4, 5],
+    valorationInput: 'qualidade_rede'
   },
   {
     id: 44,
     category: 'rede_relacionamentos',
-    question: 'Você participa de quantos grupos/comunidades profissionais?',
-    options: ['Nenhum', '1-3', '4-8', '9-15', 'Mais de 15'],
-    scores: [0, 2, 6, 12, 20],
-    valorationInput: 'grupos_profissionais'
+    question: 'Quantas indicações qualificadas você recebe mensalmente?',
+    options: ['Nenhuma', '1-5', '6-15', '16-30', 'Mais de 30'],
+    scores: [0, 3, 10, 23, 40],
+    valorationInput: 'indicacoes_mensais'
   },
   {
     id: 45,
     category: 'rede_relacionamentos',
-    question: 'Qual é sua taxa de conversão através da rede de contatos?',
-    options: ['0-5%', '6-15%', '16-30%', '31-50%', 'Mais de 50%'],
-    scores: [2.5, 10.5, 23, 40.5, 65],
-    valorationInput: 'taxa_conversao_rede'
+    question: 'Qual sua capacidade de mobilizar sua rede para projetos?',
+    options: ['Muito baixa', 'Baixa', 'Moderada', 'Alta', 'Muito alta'],
+    scores: [1, 1.5, 2, 2.5, 3],
+    valorationInput: 'capacidade_mobilizacao'
   }
 ];
 
 export default function QuestionarioPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
-  const [isComplete, setIsComplete] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    nome: '',
-    email: '',
-    telefone: ''
-  });
-  const [showUserForm, setShowUserForm] = useState(true);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleAnswer = (questionId: number, score: number) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: score
-    }));
+  const categoryNames = {
+    consistencia_marca: 'Consistência de Marca',
+    autoridade_credibilidade: 'Autoridade & Credibilidade', 
+    propriedade_intelectual: 'Propriedade Intelectual',
+    metodologias_frameworks: 'Metodologias & Frameworks',
+    conteudo_criacoes: 'Conteúdo & Criações',
+    rede_relacionamentos: 'Rede & Relacionamentos'
   };
 
-  const nextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setIsComplete(true);
-    }
+  const categoryIcons = {
+    consistencia_marca: <Crown className="w-6 h-6" />,
+    autoridade_credibilidade: <Target className="w-6 h-6" />,
+    propriedade_intelectual: <CheckCircle className="w-6 h-6" />,
+    metodologias_frameworks: <Zap className="w-6 h-6" />,
+    conteudo_criacoes: <TrendingUp className="w-6 h-6" />,
+    rede_relacionamentos: <Users className="w-6 h-6" />
   };
 
-  const prevQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    }
-  };
-
-  const handleUserSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userInfo.nome && userInfo.email) {
-      setShowUserForm(false);
-    }
-  };
-
-  // Cálculo baseado no Framework Aprimorado de Valoração
-  const calculateValuation = () => {
-    const inputs: { [key: string]: number } = {};
+  const handleAnswer = (optionIndex: number) => {
+    setSelectedOption(optionIndex);
     
-    // Extrair inputs das respostas
-    questions.forEach(q => {
-      const answer = answers[q.id];
-      if (answer !== undefined) {
-        inputs[q.valorationInput] = answer;
+    setTimeout(() => {
+      const newAnswers = [...answers];
+      newAnswers[currentQuestion] = optionIndex;
+      setAnswers(newAnswers);
+      
+      if (currentQuestion < questions.length - 1) {
+        setIsTransitioning(true);
+        setTimeout(() => {
+          setCurrentQuestion(currentQuestion + 1);
+          setSelectedOption(null);
+          setAnimationKey(prev => prev + 1);
+          setIsTransitioning(false);
+        }, 300);
+      } else {
+        setTimeout(() => {
+          setShowResult(true);
+        }, 800);
+      }
+    }, 600);
+  };
+
+  const goToPrevious = () => {
+    if (currentQuestion > 0) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion - 1);
+        setSelectedOption(answers[currentQuestion - 1] ?? null);
+        setAnimationKey(prev => prev + 1);
+        setIsTransitioning(false);
+      }, 300);
+    }
+  };
+
+  const calculateValuation = () => {
+    let valoracaoData: any = {};
+    
+    questions.forEach((question, index) => {
+      if (answers[index] !== undefined) {
+        valoracaoData[question.valorationInput] = question.scores[answers[index]];
       }
     });
 
-    // 1. CONSISTÊNCIA DE MARCA PESSOAL (Relief from Royalty Method)
-    const receitaBase = inputs.receita_base || 100000;
-    const tempoConsistencia = inputs.tempo_consistencia || 1;
-    const multiplicadorTemporal = Math.min(1 + (tempoConsistencia * 0.1), 2.0);
-    const taxaRoyaltyBase = 0.05; // 5% base
-    const taxaRoyaltyAjustada = taxaRoyaltyBase * (1 + (inputs.frequencia_conteudo || 1) * 0.2) * (1 + (inputs.protecao_marca || 1) * 0.1);
-    const taxaDesconto = 0.18;
-    const taxaImposto = 0.30;
-    
-    let vmcm = 0;
-    for (let t = 1; t <= 5; t++) {
-      const receitaPeriodo = receitaBase * Math.pow(1.15, t); // 15% crescimento
-      vmcm += (receitaPeriodo * taxaRoyaltyAjustada * (1 - taxaImposto)) / Math.pow(1 + taxaDesconto, t);
-    }
-    vmcm *= multiplicadorTemporal;
+    // MÉTODO 1: Relief from Royalty Method (RRM)
+    const receitaBase = valoracaoData.receita_base || 0;
+    const royaltyRate = 0.15 + (valoracaoData.tempo_consistencia / 100) + (valoracaoData.frequencia_conteudo / 200);
+    const crescimentoAudiencia = Math.min(valoracaoData.tamanho_audiencia / 1000, 50);
+    const valorRRM = receitaBase * royaltyRate * (1 + crescimentoAudiencia / 100) * 5;
 
-    // 2. AUTORIDADE E CREDIBILIDADE (With and Without Method)
-    const premiumPreco = (inputs.premium_preco || 0) / 100;
-    const diferencialVolume = Math.min((inputs.publicacoes || 0) * 0.02 + (inputs.mencoes_midia || 0) * 0.01, 0.3);
-    
-    let vma = 0;
-    for (let t = 1; t <= 5; t++) {
-      const receitaPeriodo = receitaBase * Math.pow(1.15, t);
-      const fccCom = receitaPeriodo * (1 + premiumPreco) * (1 + diferencialVolume);
-      const fccSem = receitaPeriodo;
-      vma += (fccCom - fccSem) / Math.pow(1 + 0.20, t);
-    }
+    // MÉTODO 2: Multi-Period Excess Earnings Method (MPEEM)
+    const fluxoCaixaBase = receitaBase * 0.25;
+    const premioRisco = 1 + (valoracaoData.experiencia_comprovada / 100) + (valoracaoData.certificacoes / 200);
+    const capacidadeGeracao = (valoracaoData.clientes_metodologia + valoracaoData.alcance_conteudo) / 10000;
+    const valorMPEEM = fluxoCaixaBase * premioRisco * capacidadeGeracao * 8;
 
-    // 3. PROPRIEDADE INTELECTUAL (Relief from Royalty Method)
-    const metodologiasProprietarias = inputs.metodologias_proprietarias || 0;
-    const frameworksUnicos = inputs.frameworks_unicos || 0;
-    const totalPI = metodologiasProprietarias + frameworksUnicos;
-    const taxaRoyaltyPI = Math.min(0.10 + (totalPI * 0.02), 0.20); // 10-20%
-    const fatorProtecao = 0.8 + (inputs.registros_pi || 0) * 0.05;
-    
-    let vpi = 0;
-    for (let t = 1; t <= 10; t++) {
-      const receitaPeriodo = receitaBase * Math.pow(1.12, t);
-      vpi += (receitaPeriodo * taxaRoyaltyPI * (1 - taxaImposto)) / Math.pow(1 + 0.22, t);
-    }
-    vpi *= fatorProtecao;
+    // MÉTODO 3: With and Without Method (WWM)
+    const cenarioComAtivos = receitaBase * (1 + valoracaoData.resultado_metodologia);
+    const cenarioSemAtivos = receitaBase * 0.3;
+    const valorWWM = (cenarioComAtivos - cenarioSemAtivos) * 6;
 
-    // 4. METODOLOGIAS E FRAMEWORKS (Multi-Period Excess Earnings Method)
-    const receitaAtribuivel = (inputs.receita_atribuivel || 50) / 100;
-    const taxaRetorno = 0.15;
-    
-    let vmp = 0;
-    for (let t = 1; t <= 7; t++) {
-      const receitaPeriodo = receitaBase * Math.pow(1.18, t) * receitaAtribuivel;
-      const despesas = receitaPeriodo * 0.40;
-      const encargosCapital = (vmcm + vma + vpi) * taxaRetorno;
-      const excessEarnings = receitaPeriodo - despesas - encargosCapital;
-      vmp += Math.max(excessEarnings, 0) / Math.pow(1 + 0.22, t);
-    }
-
-    // 5. CONTEÚDO E CRIAÇÕES (Relief from Royalty Method)
-    const livros = inputs.livros_publicados || 0;
-    const cursos = inputs.cursos_online || 0;
-    const videos = inputs.videos_educacionais || 0;
-    const totalConteudo = livros + cursos + (videos / 10);
-    const taxaRoyaltyConteudo = Math.min(0.12 + (totalConteudo * 0.01), 0.25);
-    const fatorDurabilidade = 0.8 + (inputs.vida_util_conteudo || 1) * 0.05;
-    
-    let vpc = 0;
-    const receitaConteudo = receitaBase * ((inputs.receita_conteudo || 20) / 100);
-    for (let t = 1; t <= 6; t++) {
-      const receitaPeriodo = receitaConteudo * Math.pow(1.10, t);
-      vpc += (receitaPeriodo * taxaRoyaltyConteudo * (1 - taxaImposto)) / Math.pow(1 + 0.18, t);
-    }
-    vpc *= fatorDurabilidade;
-
-    // 6. REDE DE RELACIONAMENTOS (With and Without Method)
-    const negociosReferencia = (inputs.negocios_referencia || 20) / 100;
-    const taxaConversaoRede = (inputs.taxa_conversao_rede || 10) / 100;
-    const diferencialRede = negociosReferencia * taxaConversaoRede;
-    
-    let vcr = 0;
-    for (let t = 1; t <= 4; t++) {
-      const receitaPeriodo = receitaBase * Math.pow(1.12, t);
-      const fccComRede = receitaPeriodo * (1 + diferencialRede);
-      const fccSemRede = receitaPeriodo;
-      vcr += (fccComRede - fccSemRede) / Math.pow(1 + 0.22, t);
-    }
-
-    // VALOR TOTAL
-    const valorTotal = vmcm + vma + vpi + vmp + vpc + vcr;
+    const valoracaoFinal = Math.max(valorRRM, valorMPEEM, valorWWM);
+    const valorFormatado = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(valoracaoFinal);
 
     return {
-      consistencia_marca: Math.round(vmcm),
-      autoridade_credibilidade: Math.round(vma),
-      propriedade_intelectual: Math.round(vpi),
-      metodologias_frameworks: Math.round(vmp),
-      conteudo_criacoes: Math.round(vpc),
-      rede_relacionamentos: Math.round(vcr),
-      valor_total: Math.round(valorTotal),
-      receita_base: receitaBase
+      valor: valoracaoFinal,
+      valorFormatado,
+      metodoUtilizado: valorRRM >= Math.max(valorMPEEM, valorWWM) ? 'Relief from Royalty' : 
+                      valorMPEEM >= valorWWM ? 'Multi-Period Excess Earnings' : 'With and Without'
     };
   };
 
-  if (showUserForm) {
+  if (showResult) {
+    const resultado = calculateValuation();
+    const economia = ((50000 - 197) / 50000) * 100;
+    const roi = (resultado.valor / 197) * 100;
+
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
-          <div className="text-center mb-8">
-            <DollarSign className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-purple-900 mb-4">
-              Avaliação de Ativos Intangíveis
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <div className="max-w-4xl w-full">
+          <div className="text-center mb-8 animate-fadeInUp">
+            <div className="inline-flex items-center gap-2 bg-green-100 rounded-full px-6 py-2 mb-4">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span className="text-green-800 font-semibold">Avaliação Concluída!</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-4">
+              Seus Ativos Intangíveis Valem:
             </h1>
-            <p className="text-gray-600">
-              Descubra o valor monetário dos seus ativos intangíveis com metodologia científica internacional
+            <div className="text-5xl md:text-7xl font-bold text-green-600 mb-4 animate-pulse-glow">
+              {resultado.valorFormatado}
+            </div>
+            <p className="text-xl text-gray-600 mb-8">
+              Calculado usando o método <strong>{resultado.metodoUtilizado}</strong> - 
+              mesmo usado por McKinsey, BCG e PwC
             </p>
           </div>
 
-          <form onSubmit={handleUserSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Nome Completo *
-              </label>
-              <input
-                type="text"
-                value={userInfo.nome}
-                onChange={(e) => setUserInfo(prev => ({ ...prev, nome: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                required
-              />
+          <div className="grid md:grid-cols-3 gap-6 mb-8 animate-fadeInUp" style={{animationDelay: '0.3s'}}>
+            <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <DollarSign className="w-12 h-12 text-green-500 mx-auto mb-4" />
+              <div className="text-2xl font-bold text-gray-900">{roi.toFixed(0)}%</div>
+              <div className="text-gray-600">ROI do Investimento</div>
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                value={userInfo.email}
-                onChange={(e) => setUserInfo(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                required
-              />
+            <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <TrendingUp className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+              <div className="text-2xl font-bold text-gray-900">{economia.toFixed(1)}%</div>
+              <div className="text-gray-600">Economia vs Consultoria</div>
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Telefone (opcional)
-              </label>
-              <input
-                type="tel"
-                value={userInfo.telefone}
-                onChange={(e) => setUserInfo(prev => ({ ...prev, telefone: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
+            <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+              <Zap className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+              <div className="text-2xl font-bold text-gray-900">5 min</div>
+              <div className="text-gray-600">Tempo de Análise</div>
             </div>
+          </div>
 
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all"
-            >
-              Iniciar Avaliação Científica
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
-  if (isComplete) {
-    const valuation = calculateValuation();
-    
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
-            <div className="mb-8">
-              <TrendingUp className="w-20 h-20 text-green-500 mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-purple-900 mb-4">
-                Parabéns, {userInfo.nome}!
-              </h1>
-              <p className="text-gray-600 mb-8">
-                Sua avaliação de ativos intangíveis foi concluída. Aqui está o valor monetário dos seus ativos:
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-3xl p-8 mb-8">
-              <h2 className="text-2xl font-bold text-green-900 mb-4">
-                💰 Valor Total dos Seus Ativos Intangíveis
-              </h2>
-              <div className="text-6xl font-bold text-green-600 mb-4">
-                R$ {valuation.valor_total.toLocaleString('pt-BR')}
-              </div>
-              <p className="text-green-700">
-                Baseado em metodologias internacionais de valuation
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">Consistência de Marca</h3>
-                <div className="text-2xl font-bold text-blue-600">
-                  R$ {valuation.consistencia_marca.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-blue-700 mt-2">Relief from Royalty Method</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-green-900 mb-2">Autoridade & Credibilidade</h3>
-                <div className="text-2xl font-bold text-green-600">
-                  R$ {valuation.autoridade_credibilidade.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-green-700 mt-2">With and Without Method</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-purple-900 mb-2">Propriedade Intelectual</h3>
-                <div className="text-2xl font-bold text-purple-600">
-                  R$ {valuation.propriedade_intelectual.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-purple-700 mt-2">Relief from Royalty Method</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-orange-900 mb-2">Metodologias & Frameworks</h3>
-                <div className="text-2xl font-bold text-orange-600">
-                  R$ {valuation.metodologias_frameworks.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-orange-700 mt-2">Multi-Period Excess Earnings</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-pink-900 mb-2">Conteúdo & Criações</h3>
-                <div className="text-2xl font-bold text-pink-600">
-                  R$ {valuation.conteudo_criacoes.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-pink-700 mt-2">Relief from Royalty Method</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-2xl">
-                <h3 className="text-lg font-semibold text-indigo-900 mb-2">Rede de Relacionamentos</h3>
-                <div className="text-2xl font-bold text-indigo-600">
-                  R$ {valuation.rede_relacionamentos.toLocaleString('pt-BR')}
-                </div>
-                <p className="text-sm text-indigo-700 mt-2">With and Without Method</p>
-              </div>
-            </div>
-
-            <div className="text-left bg-gray-50 p-6 rounded-2xl mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">📊 Metodologia Científica Aplicada:</h3>
-              <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-700">
-                <div>
-                  <strong>Relief from Royalty Method:</strong> Marca, PI e Conteúdo
-                </div>
-                <div>
-                  <strong>With and Without Method:</strong> Autoridade e Rede
-                </div>
-                <div>
-                  <strong>Multi-Period Excess Earnings:</strong> Metodologias
-                </div>
-              </div>
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Múltiplo sobre Receita:</strong> {(valuation.valor_total / valuation.receita_base).toFixed(1)}x
-                  | <strong>Base de Receita:</strong> R$ {valuation.receita_base.toLocaleString('pt-BR')}
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-2xl mb-8">
-              <h3 className="text-xl font-semibold text-orange-900 mb-4">
-                🚀 Quer um relatório detalhado de 40+ páginas?
+          <div className="text-center animate-fadeInUp" style={{animationDelay: '0.6s'}}>
+            <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                🎯 Quer um Relatório Detalhado de 40+ Páginas?
               </h3>
-              <p className="text-gray-700 mb-4">
-                Receba uma análise completa com benchmarking, plano de maximização de valor, 
-                projeções futuras e estratégias específicas baseadas em metodologias científicas de valuation.
+              <p className="text-gray-600 mb-6">
+                Descubra exatamente como maximizar cada um dos seus 6 tipos de ativos intangíveis
               </p>
-              <button 
+              <AnimatedButton
+                size="xl"
+                icon={ArrowRight}
                 onClick={() => window.location.href = '/questionario-profundo'}
-                className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-8 rounded-lg font-semibold hover:shadow-lg transition-all text-lg"
+                className="animate-pulse-glow"
               >
-                Análise Profunda Completa - R$ 197,00
-              </button>
+                Ver Análise Completa por R$ 197
+              </AnimatedButton>
             </div>
+            
+            <p className="text-gray-500 text-sm">
+              💡 Consultores tradicionais cobram R$ 50.000+ pela mesma análise
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
-  const isAnswered = answers[currentQ.id] !== undefined;
-
-  const categoryNames = {
-    'consistencia_marca': 'Consistência de Marca',
-    'autoridade_credibilidade': 'Autoridade & Credibilidade',
-    'propriedade_intelectual': 'Propriedade Intelectual',
-    'metodologias_frameworks': 'Metodologias & Frameworks',
-    'conteudo_criacoes': 'Conteúdo & Criações',
-    'rede_relacionamentos': 'Rede de Relacionamentos'
-  };
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4">
-      <div className="container mx-auto max-w-3xl">
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-medium text-gray-600">
-                Pergunta {currentQuestion + 1} de {questions.length}
-              </span>
-              <span className="text-sm font-medium text-purple-600">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
+      <div className="max-w-4xl w-full">
+        {/* Header com Progress */}
+        <div className="mb-8 animate-fadeInUp">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={goToPrevious}
+              disabled={currentQuestion === 0}
+              className="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Anterior</span>
+            </button>
+            
+            <div className="flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2">
+              {categoryIcons[currentQ.category]}
+              <span className="text-sm font-semibold text-purple-800">
                 {categoryNames[currentQ.category]}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
           </div>
+          
+          <ProgressBar current={currentQuestion + 1} total={questions.length} />
+        </div>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              {currentQ.question}
-            </h2>
+        {/* Question Card */}
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}>
+          <div key={animationKey} className="bg-white rounded-3xl shadow-xl p-8 md:p-12 animate-fadeInScale">
+            <div className="text-center mb-8">
+              <div className="text-purple-600 mb-4">
+                {categoryIcons[currentQ.category]}
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 leading-relaxed">
+                {currentQ.question}
+              </h2>
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {currentQ.options.map((option, index) => (
                 <button
                   key={index}
-                  onClick={() => handleAnswer(currentQ.id, currentQ.scores[index])}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                    answers[currentQ.id] === currentQ.scores[index]
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
-                      : 'border-gray-200 hover:border-purple-300 hover:bg-purple-25'
+                  onClick={() => handleAnswer(index)}
+                  disabled={selectedOption !== null}
+                  className={`w-full p-4 md:p-6 rounded-2xl border-2 transition-all duration-300 text-left font-medium ${
+                    selectedOption === index
+                      ? 'border-green-500 bg-green-50 text-green-800 transform scale-105 shadow-lg'
+                      : selectedOption !== null
+                      ? 'border-gray-200 bg-gray-50 text-gray-400'
+                      : 'border-gray-200 bg-white text-gray-800 hover:border-purple-300 hover:bg-purple-50 hover:transform hover:scale-102 interactive'
                   }`}
                 >
-                  {option}
+                  <div className="flex items-center justify-between">
+                    <span>{option}</span>
+                    {selectedOption === index && (
+                      <CheckCircle className="w-6 h-6 text-green-500 animate-fadeInScale" />
+                    )}
+                  </div>
                 </button>
               ))}
             </div>
-          </div>
 
-          <div className="flex justify-between">
-            <button
-              onClick={prevQuestion}
-              disabled={currentQuestion === 0}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
-                currentQuestion === 0
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Anterior
-            </button>
-
-            <button
-              onClick={nextQuestion}
-              disabled={!isAnswered}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
-                !isAnswered
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
-              }`}
-            >
-              {currentQuestion === questions.length - 1 ? 'Calcular Valor' : 'Próxima'}
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-500">
+                Pergunta {currentQuestion + 1} de {questions.length} • 
+                Tempo restante: ~{Math.ceil((questions.length - currentQuestion - 1) * 0.5)} minutos
+              </p>
+            </div>
           </div>
         </div>
       </div>
