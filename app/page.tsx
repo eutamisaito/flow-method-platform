@@ -16,9 +16,12 @@ export default function HomePage() {
               Descubra, desenvolva e maximize seu valor intangível através de uma metodologia 
               científica baseada nos pilares de Identidade, Influência e Legado.
             </p>
-            <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl py-4 px-8 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-3 mx-auto">
+            <button 
+              onClick={() => window.location.href = '/questionario'}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl py-4 px-8 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-3 mx-auto"
+            >
               <Play className="w-6 h-6" />
-              Iniciar Avaliação
+              Iniciar Avaliação Gratuita
             </button>
           </div>
 
