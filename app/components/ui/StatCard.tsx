@@ -10,6 +10,7 @@ interface StatCardProps {
   trend?: 'up' | 'down' | 'neutral';
   trendValue?: string;
   color?: 'purple' | 'blue' | 'green' | 'pink' | 'orange';
+  'aria-label'?: string;
 }
 
 export default function StatCard({ 
@@ -18,7 +19,8 @@ export default function StatCard({
   label, 
   trend = 'neutral', 
   trendValue,
-  color = 'purple'
+  color = 'purple',
+  'aria-label': ariaLabel
 }: StatCardProps) {
   const colors = {
     purple: {
@@ -54,21 +56,41 @@ export default function StatCard({
     neutral: 'text-gray-300'
   };
 
+  const trendIcons = {
+    up: '↗',
+    down: '↘',
+    neutral: '→'
+  };
+
+  const defaultAriaLabel = `${label}: ${value}${trendValue ? `, tendência ${trend === 'up' ? 'positiva' : trend === 'down' ? 'negativa' : 'neutra'} ${trendValue}` : ''}`;
+
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-br ${colors[color].bg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}>
-      <div className="absolute top-0 right-0 -mr-4 -mt-4">
+    <div 
+      className={`relative overflow-hidden bg-gradient-to-br ${colors[color].bg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus-within:ring-4 focus-within:ring-white focus-within:ring-opacity-50`}
+      role="article"
+      aria-label={ariaLabel || defaultAriaLabel}
+      tabIndex={0}
+    >
+      {/* Background decorative elements */}
+      <div className="absolute top-0 right-0 -mr-4 -mt-4" aria-hidden="true">
         <div className="w-20 h-20 bg-white/10 rounded-full"></div>
       </div>
-      <div className="absolute bottom-0 left-0 -ml-4 -mb-4">
+      <div className="absolute bottom-0 left-0 -ml-4 -mb-4" aria-hidden="true">
         <div className="w-16 h-16 bg-white/10 rounded-full"></div>
       </div>
       
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <Icon className={`w-8 h-8 ${colors[color].icon}`} />
+          <Icon 
+            className={`w-8 h-8 ${colors[color].icon}`} 
+            aria-hidden="true"
+          />
           {trendValue && (
-            <span className={`text-sm font-medium ${trendColors[trend]}`}>
-              {trend === 'up' && '↗'} {trend === 'down' && '↘'} {trendValue}
+            <span 
+              className={`text-sm font-medium ${trendColors[trend]}`}
+              aria-label={`Tendência ${trend === 'up' ? 'positiva' : trend === 'down' ? 'negativa' : 'neutra'}: ${trendValue}`}
+            >
+              {trendIcons[trend]} {trendValue}
             </span>
           )}
         </div>

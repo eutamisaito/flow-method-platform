@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Target, TrendingUp, Users, Star, CheckCircle, ArrowRight, Zap, Award, Clock, DollarSign, BarChart3, Crown } from 'lucide-react';
 import AnimatedButton from './components/ui/AnimatedButton';
 import StatCard from './components/ui/StatCard';
@@ -10,6 +10,17 @@ import CountdownTimer from './components/ui/CountdownTimer';
 export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Memoize the navigation function to prevent unnecessary re-renders
+  const navigateToQuestionnaire = useCallback(() => {
+    try {
+      window.location.href = '/questionario';
+    } catch (err) {
+      setError('Erro ao navegar para o questionário. Tente novamente.');
+      console.error('Navigation error:', err);
+    }
+  }, []);
 
   useEffect(() => {
     setIsVisible(true);
@@ -54,28 +65,51 @@ export default function HomePage() {
 
   const benefits = [
     {
-      icon: <Zap className="w-8 h-8" />,
+      icon: <Zap className="w-8 h-8" aria-hidden="true" />,
       title: "Metodologia Científica",
       description: "3 métodos internacionais validados por McKinsey, BCG e PwC"
     },
     {
-      icon: <Crown className="w-8 h-8" />,
+      icon: <Crown className="w-8 h-8" aria-hidden="true" />,
       title: "Autoridade Instantânea", 
       description: "Relatório de 40+ páginas que comprova seu valor real"
     },
     {
-      icon: <BarChart3 className="w-8 h-8" />,
+      icon: <BarChart3 className="w-8 h-8" aria-hidden="true" />,
       title: "Valoração Precisa",
       description: "Cálculo exato dos seus 6 tipos de ativos intangíveis"
     }
   ];
 
+  // Error boundary component
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        <div className="text-center p-8">
+          <div className="text-red-500 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Ops! Algo deu errado</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 overflow-hidden">
       {/* Hero Section */}
-      <div className="relative">
+      <section className="relative" aria-labelledby="hero-heading">
         {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
         </div>
@@ -93,11 +127,11 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto text-center">
             <div className={`mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-6 py-2 mb-6">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                <Star className="w-5 h-5 text-yellow-500 fill-current" aria-hidden="true" />
                 <span className="text-sm font-semibold text-purple-800">Metodologia Científica Validada</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gradient mb-6 leading-tight">
+              <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-bold text-gradient mb-6 leading-tight">
                 Flow Method™
               </h1>
               
@@ -109,13 +143,14 @@ export default function HomePage() {
                 <AnimatedButton 
                   size="xl" 
                   icon={Play}
-                  onClick={() => window.location.href = '/questionario'}
+                  onClick={navigateToQuestionnaire}
                   className="animate-pulse-glow"
+                  aria-label="Iniciar avaliação gratuita do Flow Method"
                 >
                   Descobrir Meu Valor Agora
                 </AnimatedButton>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
                   100% Gratuito • 5 minutos • Resultado imediato
                 </div>
               </div>
@@ -123,15 +158,15 @@ export default function HomePage() {
               {/* Social Proof */}
               <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
-                  <div className="flex">
+                  <div className="flex" role="img" aria-label="Avaliação 4.9 de 5 estrelas">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" aria-hidden="true" />
                     ))}
                   </div>
                   <span className="ml-2">4.9/5 (2.847 avaliações)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
                   <span>Usado por +10K profissionais</span>
                 </div>
               </div>
@@ -151,13 +186,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Benefits Section */}
-      <div className="py-16 bg-white/50">
+      <section className="py-16 bg-white/50" aria-labelledby="benefits-heading">
         <div className="container mx-auto px-4">
           <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 id="benefits-heading" className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
               Descubra Seu <span className="text-gradient">Valor Real</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -167,7 +202,7 @@ export default function HomePage() {
 
           <div className={`grid md:grid-cols-3 gap-8 mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
             {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-lg p-8 interactive hover:shadow-2xl">
+              <div key={index} className="bg-white rounded-2xl shadow-lg p-8 interactive hover:shadow-2xl focus-within:ring-4 focus-within:ring-purple-300">
                 <div className="text-purple-600 mb-4">
                   {benefit.icon}
                 </div>
@@ -183,22 +218,22 @@ export default function HomePage() {
 
           {/* Identity, Influence, Legacy Pillars */}
           <div className={`grid md:grid-cols-3 gap-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1s'}}>
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white interactive">
-              <Target className="w-12 h-12 mb-4 opacity-90" />
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-purple-300">
+              <Target className="w-12 h-12 mb-4 opacity-90" aria-hidden="true" />
               <h3 className="text-2xl font-semibold mb-4">Identidade</h3>
               <p className="opacity-90 leading-relaxed">
                 Clareza de propósito, valores e talentos únicos que definem quem você é e como se posiciona no mercado.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl shadow-xl p-8 text-white interactive">
-              <TrendingUp className="w-12 h-12 mb-4 opacity-90" />
+            <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl shadow-xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-pink-300">
+              <TrendingUp className="w-12 h-12 mb-4 opacity-90" aria-hidden="true" />
               <h3 className="text-2xl font-semibold mb-4">Influência</h3>
               <p className="opacity-90 leading-relaxed">
                 Capacidade de impactar, inspirar e transformar outros através de sua presença, conhecimento e ações.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl shadow-xl p-8 text-white interactive">
-              <Users className="w-12 h-12 mb-4 opacity-90" />
+            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl shadow-xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-indigo-300">
+              <Users className="w-12 h-12 mb-4 opacity-90" aria-hidden="true" />
               <h3 className="text-2xl font-semibold mb-4">Legado</h3>
               <p className="opacity-90 leading-relaxed">
                 Impacto duradouro que transcende sua presença física e beneficia gerações futuras de profissionais.
@@ -206,13 +241,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Testimonials Section */}
-      <div className="py-16 bg-gradient-to-br from-gray-50 to-white">
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white" aria-labelledby="testimonials-heading">
         <div className="container mx-auto px-4">
           <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.2s'}}>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 id="testimonials-heading" className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
               Resultados <span className="text-gradient">Reais</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -224,25 +259,28 @@ export default function HomePage() {
             <TestimonialCard {...testimonials[currentTestimonial]} />
           </div>
 
-          <div className="flex justify-center gap-2 mt-8">
+          <div className="flex justify-center gap-2 mt-8" role="tablist" aria-label="Navegação de depoimentos">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-3 h-3 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-300 ${
                   index === currentTestimonial ? 'bg-purple-600' : 'bg-gray-300'
                 }`}
+                role="tab"
+                aria-selected={index === currentTestimonial}
+                aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}
               />
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Final CTA Section */}
-      <div className="py-16 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600">
+      <section className="py-16 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600" aria-labelledby="cta-heading">
         <div className="container mx-auto px-4 text-center">
           <div className={`max-w-4xl mx-auto ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.6s'}}>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            <h2 id="cta-heading" className="text-3xl md:text-5xl font-bold text-white mb-6">
               Pronto para Descobrir Seu Valor Real?
             </h2>
             <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
@@ -253,36 +291,37 @@ export default function HomePage() {
               size="xl"
               variant="secondary"
               icon={ArrowRight}
-              onClick={() => window.location.href = '/questionario'}
+              onClick={navigateToQuestionnaire}
               className="mb-6"
+              aria-label="Iniciar avaliação gratuita agora"
             >
               Começar Avaliação Gratuita
             </AnimatedButton>
             
             <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-purple-200">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 <span>Sem compromisso</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 <span>Resultado imediato</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 <span>100% científico</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <div className="py-8 bg-gray-900 text-center">
+      <footer className="py-8 bg-gray-900 text-center">
         <p className="text-gray-400">
           © 2025 Flow Method™ - Desenvolvido por Tami Saito • Metodologia Científica Validada
         </p>
-      </div>
+      </footer>
     </div>
   );
 }
