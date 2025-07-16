@@ -22,28 +22,6 @@ export default function HomePage() {
     }
   }, []);
 
-  useEffect(() => {
-    setIsVisible(true);
-    
-    // Safety check for empty testimonials array
-    if (testimonials.length === 0) {
-      return;
-    }
-    
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
-
-  const stats = [
-    { icon: DollarSign, value: "R$ 2.3M", label: "Valor Médio Descoberto", color: "green" as const },
-    { icon: Users, value: "2.847", label: "Profissionais Avaliados", color: "blue" as const },
-    { icon: TrendingUp, value: "254%", label: "ROI Médio dos Clientes", color: "purple" as const },
-    { icon: Award, value: "99.6%", label: "Economia vs Consultoria", color: "pink" as const }
-  ];
-
   const testimonials = [
     {
       name: "Roberto Silva",
@@ -69,6 +47,28 @@ export default function HomePage() {
       highlight: "Preços 5x maiores"
     }
   ];
+
+  const stats = [
+    { icon: DollarSign, value: "R$ 2.3M", label: "Valor Médio Descoberto", color: "green" as const },
+    { icon: Users, value: "2.847", label: "Profissionais Avaliados", color: "blue" as const },
+    { icon: TrendingUp, value: "254%", label: "ROI Médio dos Clientes", color: "purple" as const },
+    { icon: Award, value: "99.6%", label: "Economia vs Consultoria", color: "pink" as const }
+  ];
+
+  useEffect(() => {
+    setIsVisible(true);
+    
+    // Safety check for empty testimonials array
+    if (testimonials.length === 0) {
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   const benefits = [
     {
