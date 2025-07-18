@@ -62,7 +62,7 @@ export default function TestimonialCard({
         cite={`${name}, ${role}${company ? ` na ${company}` : ''}`}
       >
         <span className="sr-only">Depoimento:</span>
-        "{text}"
+        &ldquo;{text}&rdquo;
         {highlight && (
           <span className="block mt-2 text-purple-600 font-semibold">
             {highlight}

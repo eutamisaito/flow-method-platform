@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Google Fonts - Inter Variable */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 /* Custom Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -409,10 +412,49 @@ body {
   }
 }
 
-/* Dark mode support */
+/* MODO ESCURO AVANÇADO */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
+  --border-primary: #e2e8f0;
+  --border-secondary: #cbd5e0;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #6b7280;
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+}
+
+/* Auto dark mode baseado em preferência do sistema */
 @media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --text-tertiary: #6b7280;
+    --border-primary: #374151;
+    --border-secondary: #4b5563;
+  }
+  
   .glass {
     background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-advanced {
+    background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
@@ -420,6 +462,42 @@ body {
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+  
+  .card-modern {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Dark mode específico para elementos */
+[data-theme="dark"] .glass {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .glass-advanced {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .card-elevated {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .card-modern {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .nav {
+  background: rgba(0, 0, 0, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* Accessibility improvements */
@@ -430,5 +508,234 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== MELHORIAS CRÍTICAS - FLOW METHOD™ ===== */
+
+/* TIPOGRAFIA MODERNA - Big Typography Trend */
+@keyframes textReveal {
+  0% { 
+    opacity: 0; 
+    transform: translateY(100px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes meshMove {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
+
+/* Tipografia Oversized */
+.hero-title-mega {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'wght' 900;
+}
+
+.hero-subtitle-mega {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* GRADIENTES MESH MODERNOS */
+.bg-gradient-mesh {
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(124, 14, 248, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(249, 198, 20, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 100, 0.3) 0%, transparent 50%);
+  background-size: 400% 400%;
+  animation: meshMove 8s ease-in-out infinite;
+}
+
+.text-gradient-animated-mega {
+  background: linear-gradient(-45deg, #7c0ef8, #f9c614, #7c0ef8, #6366f1);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: meshMove 4s ease infinite;
+}
+
+/* ELEMENTOS 3D E PROFUNDIDADE */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-3d:hover {
+  transform: translateY(-12px) rotateX(5deg);
+  box-shadow: 
+    0 25px 80px rgba(124, 14, 248, 0.2),
+    0 1px 3px rgba(0,0,0,0.12),
+    0 1px 2px rgba(0,0,0,0.24);
+}
+
+.card-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(124, 14, 248, 0.1), rgba(249, 198, 20, 0.1));
+  transform: translateZ(-10px) scale(1.1);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+/* MICRO-INTERAÇÕES AVANÇADAS */
+.btn-primary-mega {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1.5rem 3rem;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #7c0ef8, #000064);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.btn-primary-mega:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(124, 14, 248, 0.3);
+}
+
+.btn-secondary-mega {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 1.25rem 2.5rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #1a202c;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-secondary-mega:hover {
+  transform: translateY(-3px) scale(1.03);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ANIMAÇÕES DE TEXTO */
+.text-reveal {
+  animation: textReveal 0.8s ease-out forwards;
+}
+
+.text-reveal-delay-1 {
+  animation: textReveal 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.text-reveal-delay-2 {
+  animation: textReveal 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+/* GLASSMORPHISM AVANÇADO */
+.glass-advanced {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* CARDS MODERNOS */
+.card-modern {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-modern:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(124, 14, 248, 0.1);
+}
+
+/* PERFORMANCE OPTIMIZATIONS */
+.optimized-animation {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* SKELETON LOADING */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+  height: 20px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.skeleton-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+/* FOCUS INDICATORS MELHORADOS */
+.focus-visible {
+  outline: 3px solid #7c0ef8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* REDUCED MOTION PARA NOVAS ANIMAÇÕES */
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-mega,
+  .text-gradient-animated-mega,
+  .bg-gradient-mesh {
+    animation: none !important;
+  }
+  
+  .card-3d:hover,
+  .btn-primary-mega:hover,
+  .btn-secondary-mega:hover,
+  .card-modern:hover {
+    transform: none !important;
   }
 }
