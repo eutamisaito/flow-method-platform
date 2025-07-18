@@ -1,484 +1,788 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Target, TrendingUp, Users, Star, CheckCircle, ArrowRight, Zap, Award, Clock, DollarSign, BarChart3, Crown, Shield, Download, Sparkles, Rocket, Trophy } from 'lucide-react';
-import AnimatedButton from './components/ui/AnimatedButton';
-import StatCard from './components/ui/StatCard';
-import TestimonialCard from './components/ui/TestimonialCard';
-import CountdownTimer from './components/ui/CountdownTimer';
+import React, { useEffect } from 'react';
 
 export default function HomePage() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Memoize the navigation function to prevent unnecessary re-renders
-  const navigateToQuestionnaire = useCallback(() => {
-    try {
-      window.location.href = '/questionario';
-    } catch (err) {
-      setError('Erro ao navegar para o questionário. Tente novamente.');
-      console.error('Navigation error:', err);
-    }
-  }, []);
-
   useEffect(() => {
-    setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    // Smooth scrolling for anchor links
+    const handleAnchorClick = (e: Event) => {
+      const target = e.target as HTMLAnchorElement;
+      if (target.getAttribute('href')?.startsWith('#')) {
+        e.preventDefault();
+        const targetElement = document.querySelector(target.getAttribute('href')!);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+    };
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', handleAnchorClick);
+    });
+
+    // Animate elements on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Navigation background on scroll
+    const handleScroll = () => {
+      const nav = document.querySelector('.nav') as HTMLElement;
+      if (nav) {
+        if (window.scrollY > 50) {
+          nav.style.background = 'rgba(255, 255, 255, 0.95)';
+        } else {
+          nav.style.background = 'rgba(255, 255, 255, 0.8)';
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Enhanced button interactions
+    document.querySelectorAll('.button-primary, .button-secondary, .cta-button').forEach(button => {
+      const handleMouseEnter = () => {
+        (button as HTMLElement).style.transform = 'scale(1.05)';
+      };
+      
+      const handleMouseLeave = () => {
+        (button as HTMLElement).style.transform = 'scale(1)';
+      };
+
+      button.addEventListener('mouseenter', handleMouseEnter);
+      button.addEventListener('mouseleave', handleMouseLeave);
+    });
+
+    // Mobile menu functionality
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    if (mobileMenuButton) {
+      mobileMenuButton.addEventListener('click', () => {
+        alert('Menu mobile em desenvolvimento');
+      });
+    }
+
+    // Cleanup
+    return () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.removeEventListener('click', handleAnchorClick);
+      });
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
-
-  const stats = [
-    { icon: DollarSign, value: "R$ 2.3M", label: "Valor Médio Descoberto", color: "green" as const },
-    { icon: Users, value: "2.847", label: "Profissionais Avaliados", color: "blue" as const },
-    { icon: TrendingUp, value: "254%", label: "ROI Médio dos Clientes", color: "purple" as const },
-    { icon: Award, value: "99.6%", label: "Economia vs Consultoria", color: "pink" as const }
-  ];
-
-  const testimonials = [
-    {
-      name: "Roberto Silva",
-      role: "CEO",
-      company: "TechCorp",
-      rating: 5,
-      text: "O valuation científico revelou que meus ativos intangíveis valiam R$ 2.3M. Usei o relatório para levantar investimento!",
-      highlight: "Consegui R$ 5M em investimento"
-    },
-    {
-      name: "Marina Santos",
-      role: "Diretora de Marketing",
-      company: "Inovação Digital",
-      rating: 5,
-      text: "Descobri que minha expertise valia 300% mais do que eu cobrava. Agora trabalho menos e ganho muito mais.",
-      highlight: "Triplicou seus preços"
-    },
-    {
-      name: "Carlos Eduardo",
-      role: "Consultor",
-      company: "Estratégia & Resultados",
-      rating: 5,
-      text: "O relatório me deu a confiança para cobrar R$ 15k por projeto. Antes cobrava R$ 3k. Metodologia incrível!",
-      highlight: "Aumentou 500% seus preços"
-    }
-  ];
-
-  const benefits = [
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Metodologia Científica",
-      description: "Baseada em pesquisas de Harvard, MIT e validada por McKinsey, BCG e PwC. Não é achismo, é ciência aplicada ao seu valor."
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: "Cálculo Preciso",
-      description: "Algoritmo proprietário que analisa 47 variáveis para determinar o valor real dos seus 6 tipos de ativos intangíveis."
-    },
-    {
-      icon: <Crown className="w-8 h-8" />,
-      title: "Posicionamento Premium",
-      description: "Justificativa científica para cobrar preços premium. Saia da concorrência por preço e entre na diferenciação por valor."
-    }
-  ];
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-          <div className="text-red-500 mb-4">
-            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Oops! Algo deu errado</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button 
-            onClick={() => setError(null)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Tentar Novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 overflow-hidden relative">
-      {/* Floating Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="floating-element w-20 h-20 bg-purple-200 top-1/4 left-1/4 mix-blend-multiply filter blur-xl opacity-40"></div>
-        <div className="floating-element w-32 h-32 bg-pink-200 top-3/4 right-1/4 mix-blend-multiply filter blur-xl opacity-40"></div>
-        <div className="floating-element w-24 h-24 bg-blue-200 top-1/2 left-3/4 mix-blend-multiply filter blur-xl opacity-40"></div>
-      </div>
+    <div>
+      <style jsx>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
 
-      {/* Sticky Top Bar with Enhanced Urgency */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-red-600 via-red-700 to-red-600 bg-gradient-animated text-white py-3 px-4 shadow-lg">
-        <div className="container mx-auto flex items-center justify-center gap-4">
-          <div className="animate-wave">
-            <Clock className="w-4 h-4" aria-hidden="true" />
+        :root {
+          --primary: #7c0ef8;
+          --secondary: #f9c614;
+          --dark: #000064;
+          --light: #ded7e3;
+          --gray-50: #fafafa;
+          --gray-100: #f5f5f5;
+          --gray-200: #e5e5e5;
+          --gray-300: #d4d4d4;
+          --gray-600: #525252;
+          --gray-800: #262626;
+          --gray-900: #171717;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          line-height: 1.6;
+          color: var(--gray-900);
+          background: #fff;
+        }
+
+        /* Navigation */
+        .nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          transition: all 0.3s ease;
+        }
+
+        .nav-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          height: 60px;
+        }
+
+        .logo {
+          font-size: 24px;
+          font-weight: 700;
+          color: var(--primary);
+          text-decoration: none;
+        }
+
+        .nav-links {
+          display: flex;
+          list-style: none;
+          gap: 40px;
+        }
+
+        .nav-links a {
+          text-decoration: none;
+          color: var(--gray-800);
+          font-weight: 500;
+          transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+          color: var(--primary);
+        }
+
+        .cta-button {
+          background: var(--primary);
+          color: white;
+          padding: 12px 24px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          border: none;
+          cursor: pointer;
+        }
+
+        .cta-button:hover {
+          background: var(--dark);
+          transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+          padding: 120px 20px 80px;
+          text-align: center;
+          background: linear-gradient(135deg, rgba(124, 14, 248, 0.05) 0%, rgba(249, 198, 20, 0.05) 100%);
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+
+        .hero-container {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .hero h1 {
+          font-size: clamp(48px, 8vw, 72px);
+          font-weight: 700;
+          line-height: 1.1;
+          margin-bottom: 24px;
+          background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+          font-size: 24px;
+          color: var(--gray-600);
+          margin-bottom: 40px;
+          animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-buttons {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          flex-wrap: wrap;
+          animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .button-primary {
+          background: var(--primary);
+          color: white;
+          padding: 16px 32px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 18px;
+          transition: all 0.3s ease;
+          border: 2px solid var(--primary);
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .button-primary:hover {
+          transform: scale(1.05);
+          box-shadow: 0 10px 30px rgba(124, 14, 248, 0.3);
+        }
+
+        .button-secondary {
+          background: transparent;
+          color: var(--primary);
+          padding: 16px 32px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 18px;
+          border: 2px solid var(--primary);
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .button-secondary:hover {
+          background: var(--primary);
+          color: white;
+          transform: scale(1.05);
+        }
+
+        /* Pillars Section */
+        .pillars {
+          padding: 100px 20px;
+          background: white;
+        }
+
+        .section-container {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .section-title {
+          text-align: center;
+          margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+          font-size: clamp(32px, 5vw, 48px);
+          font-weight: 700;
+          margin-bottom: 16px;
+          color: var(--gray-900);
+        }
+
+        .section-title p {
+          font-size: 20px;
+          color: var(--gray-600);
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .pillars-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 40px;
+        }
+
+        .pillar-card {
+          background: white;
+          border-radius: 20px;
+          padding: 40px 30px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          border: 1px solid var(--gray-200);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .pillar-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .pillar-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .pillar-icon {
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, var(--primary), var(--dark));
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 24px;
+          font-size: 36px;
+          color: white;
+        }
+
+        .pillar-card h3 {
+          font-size: 28px;
+          font-weight: 700;
+          margin-bottom: 16px;
+          color: var(--gray-900);
+        }
+
+        .pillar-card p {
+          font-size: 16px;
+          color: var(--gray-600);
+          margin-bottom: 24px;
+        }
+
+        .pillar-features {
+          list-style: none;
+        }
+
+        .pillar-features li {
+          padding: 8px 0;
+          font-size: 14px;
+          color: var(--gray-600);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .pillar-features li::before {
+          content: '✓';
+          color: var(--secondary);
+          font-weight: bold;
+        }
+
+        /* Stats Section */
+        .stats {
+          padding: 100px 20px;
+          background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+          color: white;
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 40px;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .stat-item {
+          text-align: center;
+        }
+
+        .stat-number {
+          font-size: 48px;
+          font-weight: 700;
+          margin-bottom: 8px;
+          color: var(--secondary);
+        }
+
+        .stat-label {
+          font-size: 16px;
+          opacity: 0.9;
+        }
+
+        /* Tools Preview */
+        .tools-preview {
+          padding: 100px 20px;
+          background: var(--gray-50);
+        }
+
+        .tools-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 30px;
+          margin-top: 60px;
+        }
+
+        .tool-card {
+          background: white;
+          border-radius: 16px;
+          padding: 30px;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+          transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .tool-tag {
+          background: var(--light);
+          color: var(--primary);
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          margin-bottom: 16px;
+          display: inline-block;
+        }
+
+        .tool-card h4 {
+          font-size: 20px;
+          font-weight: 600;
+          margin-bottom: 12px;
+          color: var(--gray-900);
+        }
+
+        .tool-card p {
+          font-size: 14px;
+          color: var(--gray-600);
+          line-height: 1.5;
+        }
+
+        /* CTA Section */
+        .final-cta {
+          padding: 100px 20px;
+          background: white;
+          text-align: center;
+        }
+
+        .cta-content {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .cta-content h2 {
+          font-size: clamp(32px, 5vw, 48px);
+          font-weight: 700;
+          margin-bottom: 24px;
+          color: var(--gray-900);
+        }
+
+        .cta-content p {
+          font-size: 20px;
+          color: var(--gray-600);
+          margin-bottom: 40px;
+        }
+
+        /* Footer */
+        .footer {
+          background: var(--gray-900);
+          color: white;
+          padding: 60px 20px 40px;
+        }
+
+        .footer-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .footer-logo {
+          font-size: 28px;
+          font-weight: 700;
+          color: var(--primary);
+          margin-bottom: 16px;
+        }
+
+        .footer p {
+          color: var(--gray-300);
+          margin-bottom: 40px;
+        }
+
+        .footer-links {
+          display: flex;
+          justify-content: center;
+          gap: 40px;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+        }
+
+        .footer-links a {
+          color: var(--gray-300);
+          text-decoration: none;
+          transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+          color: var(--primary);
+        }
+
+        .footer-bottom {
+          border-top: 1px solid var(--gray-800);
+          padding-top: 20px;
+          color: var(--gray-500);
+          font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-on-scroll {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animate {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+          display: none;
+          flex-direction: column;
+          gap: 4px;
+          cursor: pointer;
+        }
+
+        .mobile-menu-button span {
+          width: 25px;
+          height: 3px;
+          background: var(--gray-800);
+          transition: all 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .nav-links {
+            display: none;
+          }
+
+          .mobile-menu-button {
+            display: flex;
+          }
+
+          .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .pillars-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+          }
+
+          .tools-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+          }
+
+          .footer-links {
+            flex-direction: column;
+            gap: 20px;
+          }
+        }
+      `}</style>
+
+      {/* Navigation */}
+      <nav className="nav">
+        <div className="nav-container">
+          <a href="#" className="logo">Flow Method™</a>
+          <ul className="nav-links">
+            <li><a href="#pilares">Pilares</a></li>
+            <li><a href="#ferramentas">Ferramentas</a></li>
+            <li><a href="#resultados">Resultados</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+          </ul>
+          <a href="#contato" className="cta-button">Comece Agora</a>
+          <div className="mobile-menu-button">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-          <span className="text-sm font-bold sparkle">🔥 OFERTA LIMITADA:</span>
-          <CountdownTimer hours={23} minutes={47} size="sm" />
-          <span className="text-sm font-medium">Avaliação GRATUITA expira em breve!</span>
-          <Sparkles className="w-4 h-4 animate-sparkle" aria-hidden="true" />
         </div>
-      </div>
+      </nav>
 
-      {/* Hero Section - Enhanced Above the Fold */}
-      <section className="relative" aria-labelledby="hero-heading">
-        {/* Enhanced Background Elements */}
-        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-300 to-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-pink-300 to-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-container">
+          <h1>Transforme sua expertise em autoridade de mercado</h1>
+          <p>Arsenal completo de 30+ ferramentas proprietárias para líderes que querem se tornar referências</p>
+          <div className="hero-buttons">
+            <a href="#diagnostico" className="button-primary">
+              🎯 Fazer Diagnóstico Gratuito
+            </a>
+            <a href="#demo" className="button-secondary">
+              ▶️ Ver Demo
+            </a>
+          </div>
         </div>
+      </section>
 
-        <div className="relative container mx-auto px-4 py-8 lg:py-16">
-          {/* Enhanced Trust Signals Header */}
-          <div className={`text-center mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
-            <div className="flex flex-wrap justify-center items-center gap-6 mb-4">
-              <div className="flex items-center gap-2 glass-strong rounded-full px-4 py-2">
-                <Shield className="w-5 h-5 text-green-500" aria-hidden="true" />
-                <span className="text-sm font-bold text-gray-700">Metodologia Científica</span>
-              </div>
-              <div className="flex items-center gap-2 glass-strong rounded-full px-4 py-2">
-                <Star className="w-5 h-5 text-yellow-500 fill-current animate-sparkle" aria-hidden="true" />
-                <span className="text-sm font-bold text-gray-700">4.9/5 (2.847 avaliações)</span>
-              </div>
-              <div className="flex items-center gap-2 glass-strong rounded-full px-4 py-2">
-                <Users className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                <span className="text-sm font-bold text-gray-700">+10K profissionais</span>
-              </div>
+      {/* Pillars Section */}
+      <section className="pillars animate-on-scroll" id="pilares">
+        <div className="section-container">
+          <div className="section-title">
+            <h2>3 Pilares da Transformação</h2>
+            <p>Uma jornada estruturada em 8 etapas para construir identidade, influência e legado duradouro</p>
+          </div>
+          <div className="pillars-grid">
+            <div className="pillar-card">
+              <div className="pillar-icon">🎯</div>
+              <h3>Flow Identity Matrix™</h3>
+              <p>Construção de identidade de autoridade através de Essência, Expressão e Impacto</p>
+              <ul className="pillar-features">
+                <li>Flow Values Assessment™</li>
+                <li>Talent Mapping Protocol™</li>
+                <li>Purpose Articulation Framework™</li>
+                <li>Strategic Positioning Canvas</li>
+                <li>Personal Narrative Development</li>
+                <li>Impact Measurement Dashboard</li>
+              </ul>
             </div>
-          </div>
-
-          {/* Enhanced Main Hero Content */}
-          <div className="max-w-5xl mx-auto text-center">
-            <div className={`mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.2s'}}>
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-100 via-emerald-100 to-green-100 rounded-full px-6 py-3 mb-6 card-elevated">
-                <CheckCircle className="w-5 h-5 text-green-600" aria-hidden="true" />
-                <span className="text-sm font-bold text-green-800">✅ VALIDADO POR McKINSEY, BCG E PwC</span>
-                <Trophy className="w-5 h-5 text-green-600 animate-bounce-in" aria-hidden="true" />
-              </div>
-              
-              <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-black text-gradient-animated mb-6 leading-tight">
-                Descubra o Valor Real dos Seus<br />
-                <span className="text-gradient-purple sparkle">Ativos Intangíveis</span>
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-                Pare de cobrar por tempo. A metodologia científica <span className="font-bold text-gradient-purple">Flow Method™</span> revela quanto você realmente vale - e como aumentar seus preços em até <span className="font-bold text-gradient-success animate-pulse-glow">300%</span>
-              </p>
-
-              {/* Enhanced Primary CTA Section */}
-              <div className="mb-8">
-                <div className="relative inline-block">
-                  <AnimatedButton 
-                    size="xl" 
-                    icon={Download}
-                    onClick={navigateToQuestionnaire}
-                    className="animate-pulse-glow text-xl py-6 px-12 mb-4 btn-glow sparkle relative z-10"
-                    aria-label="Baixar relatório gratuito do Flow Method"
-                  >
-                    <Rocket className="w-6 h-6 mr-2" aria-hidden="true" />
-                    📊 BAIXAR RELATÓRIO GRATUITO
-                  </AnimatedButton>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur-xl opacity-30 animate-pulse-glow"></div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600 glass rounded-full px-4 py-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                    Relatório de 40+ páginas • Resultado em 5 minutos
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 glass rounded-full px-4 py-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                    100% Gratuito • Sem cartão de crédito
-                  </div>
-                </div>
-              </div>
-
-              {/* Enhanced Value Proposition Bullets */}
-              <div className="grid md:grid-cols-3 gap-4 mb-8">
-                <div className={`card-elevated rounded-xl p-6 border border-gray-200 ${isVisible ? 'animate-slide-in-left' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-pulse" aria-hidden="true"></div>
-                    <span className="font-bold text-gray-900 text-lg">Descubra seu valor real</span>
-                  </div>
-                  <p className="text-gray-600 leading-relaxed">Cálculo preciso dos seus 6 tipos de ativos intangíveis com metodologia científica</p>
-                </div>
-                <div className={`card-elevated rounded-xl p-6 border border-gray-200 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse" aria-hidden="true"></div>
-                    <span className="font-bold text-gray-900 text-lg">Aumente seus preços</span>
-                  </div>
-                  <p className="text-gray-600 leading-relaxed">Justificativa científica para cobrar 3x mais com confiança e credibilidade</p>
-                </div>
-                <div className={`card-elevated rounded-xl p-6 border border-gray-200 ${isVisible ? 'animate-slide-in-right' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse" aria-hidden="true"></div>
-                    <span className="font-bold text-gray-900 text-lg">Ganhe credibilidade</span>
-                  </div>
-                  <p className="text-gray-600 leading-relaxed">Relatório profissional validado pelas principais consultorias do mundo</p>
-                </div>
-              </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">📡</div>
+              <h3>Flow Influence System™</h3>
+              <p>Desenvolvimento de influência autêntica através de Autoridade, Visibilidade e Conexão</p>
+              <ul className="pillar-features">
+                <li>Authority Assessment Matrix</li>
+                <li>Visibility Amplification Plan™</li>
+                <li>Flow Storytelling Matrix™</li>
+                <li>Strategic Relationship Mapping™</li>
+                <li>Community Building Protocol</li>
+                <li>Content Authority Framework</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">🏛️</div>
+              <h3>Flow Legacy Architecture™</h3>
+              <p>Criação de legado duradouro através de Criação, Amplificação e Perpetuação</p>
+              <ul className="pillar-features">
+                <li>Innovation Framework</li>
+                <li>Systems Architecture Blueprint</li>
+                <li>Impact Multiplication System</li>
+                <li>Succession Planning Framework™</li>
+                <li>Legacy Vision Canvas™</li>
+                <li>Knowledge Transfer Protocol</li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Social Proof Stats */}
-      <section className="py-12 glass-strong border-y border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className={`grid grid-cols-2 lg:grid-cols-4 gap-6 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.4s'}}>
-            {stats.map((stat, index) => (
-              <div key={index} className={`animate-fadeInUp`} style={{animationDelay: `${1 + index * 0.1}s`}}>
-                <StatCard
-                  icon={stat.icon}
-                  value={stat.value}
-                  label={stat.label}
-                  color={stat.color}
-                />
-              </div>
-            ))}
+      {/* Stats Section */}
+      <section className="stats animate-on-scroll" id="resultados">
+        <div className="section-container">
+          <div className="section-title">
+            <h2 style={{color: 'white'}}>Resultados Comprovados</h2>
+            <p style={{color: 'rgba(255,255,255,0.8)'}}>Métricas de sucesso dos nossos clientes</p>
           </div>
-        </div>
-      </section>
-
-      {/* Enhanced Testimonials Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-purple-50" aria-labelledby="testimonials-heading">
-        <div className="container mx-auto px-4">
-          <div className={`text-center mb-12 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '0.6s'}}>
-            <h2 id="testimonials-heading" className="text-3xl md:text-5xl font-bold text-gradient-animated mb-6">
-              Veja os Resultados <span className="sparkle">Reais</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Profissionais que descobriram seu valor real e multiplicaram seus ganhos com metodologia científica
-            </p>
-          </div>
-
-          <div className={`max-w-4xl mx-auto mb-8 ${isVisible ? 'animate-fadeInScale' : 'opacity-0'}`} style={{animationDelay: '0.8s'}}>
-            <div className="card-elevated rounded-2xl overflow-hidden">
-              <TestimonialCard {...testimonials[currentTestimonial]} />
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-number">95%</div>
+              <div className="stat-label">Clareza de Propósito</div>
             </div>
-          </div>
-
-          <div className="flex justify-center gap-3 mb-8" role="tablist" aria-label="Navegação de depoimentos">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-4 h-4 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-300 ${
-                  index === currentTestimonial 
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 scale-125' 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                role="tab"
-                aria-selected={index === currentTestimonial}
-                aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}
-              />
-            ))}
-          </div>
-
-          {/* Enhanced Secondary CTA */}
-          <div className="text-center">
-            <AnimatedButton 
-              size="lg"
-              icon={ArrowRight}
-              onClick={navigateToQuestionnaire}
-              className="mb-4 btn-glow"
-              aria-label="Quero descobrir meu valor real"
-            >
-              <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-              Quero Descobrir Meu Valor Real
-            </AnimatedButton>
-            <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-              <Users className="w-4 h-4" aria-hidden="true" />
-              Junte-se a mais de 10.000 profissionais de sucesso
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Benefits Section */}
-      <section className="py-20 glass relative overflow-hidden" aria-labelledby="benefits-heading">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className={`text-center mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1s'}}>
-            <h2 id="benefits-heading" className="text-3xl md:text-5xl font-bold text-gradient-animated mb-6">
-              Por Que o Flow Method™ é <span className="sparkle">Diferente?</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              A única metodologia científica que calcula o valor real dos seus ativos intangíveis
-            </p>
-          </div>
-
-          <div className={`grid md:grid-cols-3 gap-8 mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.2s'}}>
-            {benefits.map((benefit, index) => (
-              <div key={index} className={`card-elevated rounded-2xl shadow-xl p-8 interactive hover:shadow-2xl focus-within:ring-4 focus-within:ring-purple-300 border border-gray-100 animate-fadeInUp`} style={{animationDelay: `${1.4 + index * 0.2}s`}}>
-                <div className="text-gradient-purple mb-6 flex justify-center">
-                  {benefit.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-center">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Enhanced Identity, Influence, Legacy Pillars */}
-          <div className={`grid md:grid-cols-3 gap-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.4s'}}>
-            <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-purple-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
-              <Target className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
-              <h3 className="text-2xl font-bold mb-4">Identidade</h3>
-              <p className="opacity-90 leading-relaxed">
-                Clareza de propósito, valores e talentos únicos que definem quem você é e como se posiciona no mercado.
-              </p>
+            <div className="stat-item">
+              <div className="stat-number">380%</div>
+              <div className="stat-label">Aumento de Autoridade</div>
             </div>
-            <div className="bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-pink-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
-              <TrendingUp className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
-              <h3 className="text-2xl font-bold mb-4">Influência</h3>
-              <p className="opacity-90 leading-relaxed">
-                Capacidade de impactar, inspirar e transformar outros através de sua presença, conhecimento e ações.
-              </p>
+            <div className="stat-item">
+              <div className="stat-number">87%</div>
+              <div className="stat-label">Taxa de Sustentabilidade</div>
             </div>
-            <div className="bg-gradient-to-br from-indigo-500 via-indigo-600 to-indigo-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-indigo-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
-              <Users className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
-              <h3 className="text-2xl font-bold mb-4">Legado</h3>
-              <p className="opacity-90 leading-relaxed">
-                Impacto duradouro que transcende sua presença física e beneficia gerações futuras de profissionais.
-              </p>
+            <div className="stat-item">
+              <div className="stat-number">30+</div>
+              <div className="stat-label">Ferramentas Proprietárias</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Final CTA Section */}
-      <section className="py-20 bg-gradient-animated relative overflow-hidden" aria-labelledby="cta-heading">
-        {/* Enhanced Background pattern */}
-        <div className="absolute inset-0 bg-black/20" aria-hidden="true">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-          <div className="floating-element w-40 h-40 bg-white/10 top-1/4 left-1/4"></div>
-          <div className="floating-element w-32 h-32 bg-white/10 top-3/4 right-1/4"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <div className={`max-w-5xl mx-auto ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.6s'}}>
-            <div className="mb-8">
-              <div className="inline-block bg-red-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 animate-pulse-glow sparkle">
-                🚨 ÚLTIMAS VAGAS DISPONÍVEIS
-              </div>
-              <h2 id="cta-heading" className="text-3xl md:text-6xl font-bold text-white mb-6">
-                Descubra Seu Valor Real<br />
-                <span className="text-yellow-300 sparkle">Antes Que Seja Tarde</span>
-              </h2>
-              <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Mais de 10.000 profissionais já descobriram que valiam muito mais do que imaginavam. Seja o próximo!
-              </p>
+      {/* Tools Preview */}
+      <section className="tools-preview animate-on-scroll" id="ferramentas">
+        <div className="section-container">
+          <div className="section-title">
+            <h2>Arsenal Completo de Ferramentas</h2>
+            <p>Mais de 30 ferramentas organizadas estrategicamente para sua transformação</p>
+          </div>
+          <div className="tools-grid">
+            <div className="tool-card">
+              <span className="tool-tag">Diagnóstico</span>
+              <h4>Flow Values Assessment™</h4>
+              <p>Mapeamento profundo dos valores essenciais e sua aplicação na liderança e posicionamento</p>
             </div>
-            
-            <div className="glass-strong rounded-3xl p-10 mb-8 border border-white/20 backdrop-blur-xl">
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div className="text-left">
-                  <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Trophy className="w-6 h-6" aria-hidden="true" />
-                    O que você vai receber:
-                  </h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-center gap-3 text-purple-100">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
-                      <span className="font-medium">Relatório completo de 40+ páginas</span>
-                    </li>
-                    <li className="flex items-center gap-3 text-purple-100">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
-                      <span className="font-medium">Valoração científica dos seus ativos</span>
-                    </li>
-                    <li className="flex items-center gap-3 text-purple-100">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
-                      <span className="font-medium">Plano de ação personalizado</span>
-                    </li>
-                    <li className="flex items-center gap-3 text-purple-100">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" aria-hidden="true" />
-                      <span className="font-medium">Justificativa para aumentar preços</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="text-center">
-                  <div className="mb-6">
-                    <span className="text-5xl font-bold text-white block mb-2">R$ 0</span>
-                    <span className="text-purple-200 line-through text-xl font-medium">R$ 2.997</span>
-                  </div>
-                  <div className="mb-6">
-                    <CountdownTimer hours={23} minutes={47} size="lg" />
-                  </div>
-                  <div className="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold">
-                    <Sparkles className="w-4 h-4" aria-hidden="true" />
-                    Economia de 100% por tempo limitado
-                  </div>
-                </div>
-              </div>
-              
-              <div className="relative">
-                <AnimatedButton 
-                  size="xl"
-                  variant="success"
-                  icon={Download}
-                  onClick={navigateToQuestionnaire}
-                  className="w-full md:w-auto text-2xl py-8 px-20 mb-6 animate-pulse-glow btn-glow sparkle relative z-10"
-                  aria-label="Baixar relatório gratuito agora"
-                >
-                  <Rocket className="w-6 h-6 mr-3" aria-hidden="true" />
-                  📊 BAIXAR RELATÓRIO GRATUITO AGORA
-                </AnimatedButton>
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl blur-xl opacity-40 animate-pulse-glow"></div>
-              </div>
+            <div className="tool-card">
+              <span className="tool-tag">Estratégia</span>
+              <h4>Strategic Positioning Canvas</h4>
+              <p>Definição do posicionamento estratégico baseado em diferenciação autêntica</p>
             </div>
-            
-            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-purple-200">
-              <div className="flex items-center gap-2 glass rounded-full px-4 py-2">
-                <Shield className="w-4 h-4" aria-hidden="true" />
-                <span className="font-medium">100% Seguro</span>
-              </div>
-              <div className="flex items-center gap-2 glass rounded-full px-4 py-2">
-                <Clock className="w-4 h-4" aria-hidden="true" />
-                <span className="font-medium">Resultado em 5 min</span>
-              </div>
-              <div className="flex items-center gap-2 glass rounded-full px-4 py-2">
-                <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                <span className="font-medium">Sem compromisso</span>
-              </div>
-              <div className="flex items-center gap-2 glass rounded-full px-4 py-2">
-                <Star className="w-4 h-4" aria-hidden="true" />
-                <span className="font-medium">Metodologia científica</span>
-              </div>
+            <div className="tool-card">
+              <span className="tool-tag">Implementação</span>
+              <h4>Flow Storytelling Matrix™</h4>
+              <p>Estrutura para desenvolvimento de narrativas de autoridade e conexão</p>
+            </div>
+            <div className="tool-card">
+              <span className="tool-tag">Monitoramento</span>
+              <h4>Impact Measurement Dashboard</h4>
+              <p>Métricas de impacto da identidade na percepção de autoridade</p>
+            </div>
+            <div className="tool-card">
+              <span className="tool-tag">Escalabilidade</span>
+              <h4>Systems Architecture Blueprint</h4>
+              <p>Estruturação de sistemas escaláveis para amplificação de impacto</p>
+            </div>
+            <div className="tool-card">
+              <span className="tool-tag">Legado</span>
+              <h4>Succession Planning Framework™</h4>
+              <p>Planejamento estratégico para perpetuação do legado através de sucessores</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Footer */}
-      <footer className="py-12 bg-gray-900 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-gray-900 to-pink-900/20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-              <Crown className="w-4 h-4 text-white" aria-hidden="true" />
-            </div>
-            <span className="text-xl font-bold text-gradient-purple">Flow Method™</span>
+      {/* Final CTA */}
+      <section className="final-cta animate-on-scroll" id="contato">
+        <div className="cta-content">
+          <h2>Pronto para se tornar uma referência?</h2>
+          <p>Comece sua jornada de transformação com diagnóstico estratégico gratuito</p>
+          <a href="#diagnostico" className="button-primary" style={{fontSize: '20px', padding: '20px 40px'}}>
+            🚀 Agendar Diagnóstico Estratégico
+          </a>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-logo">Flow Method™</div>
+          <p>Desenvolvido por Tami Saito - Transformação integral de líderes em referências de autoridade</p>
+          <div className="footer-links">
+            <a href="#privacidade">Privacidade</a>
+            <a href="#termos">Termos</a>
+            <a href="#contato">Contato</a>
+            <a href="#suporte">Suporte</a>
           </div>
-          <p className="text-gray-400 mb-4 text-lg">
-            © 2025 Flow Method™ - Desenvolvido por Tami Saito
-          </p>
-          <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-            <Trophy className="w-4 h-4" aria-hidden="true" />
-            Metodologia Científica Validada por McKinsey, BCG e PwC
-          </p>
+          <div className="footer-bottom">
+            © 2025 Flow Method™. Todos os direitos reservados.
+          </div>
         </div>
       </footer>
     </div>
