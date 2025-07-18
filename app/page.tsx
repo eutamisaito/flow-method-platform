@@ -252,13 +252,13 @@ export default function HomePage() {
         /* Navigation */
         .nav {
           position: fixed;
-          top: 0;
+          top: 56px;
           left: 0;
           right: 0;
-          background: rgba(255, 255, 255, 0.8);
+          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(20px);
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-          z-index: 1000;
+          z-index: 999;
           transition: all 0.3s ease;
         }
 
@@ -478,9 +478,7 @@ export default function HomePage() {
         }
 
         .bg-gradient-animated {
-          background: linear-gradient(-45deg, var(--primary), var(--dark), var(--primary), #6366f1);
-          background-size: 400% 400%;
-          animation: gradientShift 4s ease infinite;
+          background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 50%, var(--primary) 100%);
         }
 
         @keyframes gradientShift {
@@ -490,12 +488,21 @@ export default function HomePage() {
         }
 
         .text-gradient-animated {
-          background: linear-gradient(-45deg, var(--primary), var(--dark), var(--primary), #6366f1);
-          background-size: 400% 400%;
+          background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: gradientShift 4s ease infinite;
+          position: relative;
+        }
+
+        .text-gradient-animated::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: var(--gray-900);
+          z-index: -1;
+          -webkit-text-fill-color: var(--gray-900);
         }
 
         /* Mobile Menu */
@@ -525,7 +532,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 overflow-hidden relative">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 relative">
         {/* Floating Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
           <div className="floating-element w-20 h-20 bg-purple-200 top-1/4 left-1/4 mix-blend-multiply filter blur-xl opacity-40"></div>
@@ -534,7 +541,7 @@ export default function HomePage() {
         </div>
 
         {/* Sticky Top Bar */}
-        <div className="sticky top-0 z-50 bg-gradient-to-r from-red-600 via-red-700 to-red-600 bg-gradient-animated text-white py-3 px-4 shadow-lg">
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-red-600 via-red-700 to-red-600 text-white py-3 px-4 shadow-lg">
           <div className="container mx-auto flex items-center justify-center gap-4">
             <div className="animate-wave">
               <Clock className="w-4 h-4" aria-hidden="true" />
@@ -566,7 +573,7 @@ export default function HomePage() {
         </nav>
 
         {/* Hero Section */}
-        <section className="relative pt-20" aria-labelledby="hero-heading">
+        <section className="relative pt-32" aria-labelledby="hero-heading">
           <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-300 to-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
             <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-pink-300 to-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
@@ -745,10 +752,10 @@ export default function HomePage() {
         </section>
 
         {/* Benefits Section - Flow Method Pillars */}
-        <section className="py-20 glass relative overflow-hidden animate-on-scroll" aria-labelledby="benefits-heading" id="pilares">
+        <section className="py-20 bg-white/50 backdrop-blur-sm relative animate-on-scroll" aria-labelledby="benefits-heading" id="pilares">
           <div className="container mx-auto px-4 relative z-10">
             <div className={`text-center mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1s'}}>
-              <h2 id="benefits-heading" className="text-3xl md:text-5xl font-bold text-gradient-animated mb-6">
+              <h2 id="benefits-heading" className="text-3xl md:text-5xl font-bold text-gradient-purple mb-6">
                 3 Pilares da <span className="sparkle">Transformação</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -772,25 +779,22 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className={`grid md:grid-cols-3 gap-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.4s'}}>
-              <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-purple-300 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div className={`grid md:grid-cols-3 gap-8 max-w-6xl mx-auto ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{animationDelay: '1.4s'}}>
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg p-8 text-white transform hover:scale-105 transition-all duration-300">
                 <Target className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
                 <h3 className="text-2xl font-bold mb-4">Identidade</h3>
                 <p className="opacity-90 leading-relaxed">
                   Flow Identity Matrix™ - Construção de identidade de autoridade através de Essência, Expressão e Impacto
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-pink-300 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+              <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl shadow-lg p-8 text-white transform hover:scale-105 transition-all duration-300">
                 <TrendingUp className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
                 <h3 className="text-2xl font-bold mb-4">Influência</h3>
                 <p className="opacity-90 leading-relaxed">
                   Flow Influence System™ - Desenvolvimento de influência autêntica através de Autoridade, Visibilidade e Conexão
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-indigo-500 via-indigo-600 to-indigo-700 rounded-2xl shadow-2xl p-8 text-white interactive focus-within:ring-4 focus-within:ring-indigo-300 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+              <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl shadow-lg p-8 text-white transform hover:scale-105 transition-all duration-300">
                 <Users className="w-12 h-12 mb-6 opacity-90" aria-hidden="true" />
                 <h3 className="text-2xl font-bold mb-4">Legado</h3>
                 <p className="opacity-90 leading-relaxed">
@@ -805,7 +809,7 @@ export default function HomePage() {
         <section className="py-20 bg-gradient-to-br from-gray-50 to-purple-50 animate-on-scroll" id="ferramentas">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold text-gradient-animated mb-6">
+              <h2 className="text-3xl md:text-5xl font-bold text-gradient-purple mb-6">
                 Arsenal Completo de <span className="sparkle">Ferramentas</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -987,7 +991,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 bg-gray-900 text-center relative overflow-hidden" id="sobre">
+        <footer className="py-12 bg-gray-900 text-center relative" id="sobre">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-gray-900 to-pink-900/20"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="flex items-center justify-center gap-3 mb-6">
