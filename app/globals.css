@@ -336,7 +336,8 @@ body {
 }
 
 .bg-gradient-blue-purple {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Deep sky-blue to vivid purple for clearer visual distinction */
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
 .bg-gradient-animated {

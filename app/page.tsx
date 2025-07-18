@@ -11,6 +11,10 @@ export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Mobile navigation state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
   // Memoize the navigation function to prevent unnecessary re-renders
   const navigateToQuestionnaire = useCallback(() => {
@@ -513,6 +517,57 @@ export default function HomePage() {
           transition: all 0.3s ease;
         }
 
+        /* Hamburger transformation */
+        .mobile-menu-button.open span:nth-child(1) {
+          transform: translateY(8px) rotate(45deg);
+        }
+        .mobile-menu-button.open span:nth-child(2) {
+          opacity: 0;
+        }
+        .mobile-menu-button.open span:nth-child(3) {
+          transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Mobile drawer */
+        .mobile-menu {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 80%;
+          max-width: 320px;
+          height: 100vh;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(20px);
+          padding: 80px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          transition: right 0.3s ease;
+          z-index: 1100;
+        }
+
+        .mobile-menu.open {
+          right: 0;
+        }
+
+        .mobile-menu a {
+          color: var(--gray-800);
+          font-size: 18px;
+          font-weight: 500;
+          text-decoration: none;
+        }
+
+        .mobile-menu a:hover {
+          color: var(--primary);
+        }
+
+        /* Responsive hero typography */
+        .hero-title {
+          font-size: clamp(48px, 8vw, 112px);
+          line-height: 0.9;
+          letter-spacing: -0.02em;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
           .nav-links {
@@ -557,13 +612,40 @@ export default function HomePage() {
               <li><a href="#sobre">Sobre</a></li>
             </ul>
             <button onClick={navigateToQuestionnaire} className="cta-button">Comece Agora</button>
-            <div className="mobile-menu-button">
+            {/* Hamburger */}
+            <div 
+              className={`mobile-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
+              onClick={toggleMobileMenu}
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') toggleMobileMenu();
+              }}
+            >
               <span></span>
               <span></span>
               <span></span>
             </div>
           </div>
         </nav>
+
+        {/* Mobile Menu Drawer */}
+        <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+          <ul className="flex flex-col gap-6 text-center mt-8">
+            <li><a href="#pilares" onClick={toggleMobileMenu}>Pilares</a></li>
+            <li><a href="#ferramentas" onClick={toggleMobileMenu}>Ferramentas</a></li>
+            <li><a href="#resultados" onClick={toggleMobileMenu}>Resultados</a></li>
+            <li><a href="#sobre" onClick={toggleMobileMenu}>Sobre</a></li>
+          </ul>
+          <button 
+            onClick={() => { toggleMobileMenu(); navigateToQuestionnaire(); }}
+            className="cta-button mt-10 w-full"
+          >
+            Comece Agora
+          </button>
+        </div>
 
         {/* Hero Section */}
         <section className="relative pt-20" aria-labelledby="hero-heading">
@@ -598,7 +680,7 @@ export default function HomePage() {
                   <Trophy className="w-5 h-5 text-green-600 animate-bounce-in" aria-hidden="true" />
                 </div>
                 
-                <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-black text-gradient-animated mb-6 leading-tight">
+                <h1 id="hero-heading" className="hero-title font-black text-gradient-animated mb-6 leading-tight">
                   Transforme sua expertise em<br />
                   <span className="text-gradient-purple sparkle">Autoridade de Mercado</span>
                 </h1>
